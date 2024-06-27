@@ -1,0 +1,26 @@
+[
+    {
+        "key": "A",
+        "label": "\uE0A0 홀드"
+    },
+    {
+        "key": "!A",
+        "label": "\uE0A0 원클릭"
+    },
+    {
+        "key": "R",
+        "label": "\uE0A5 + \uE0A0"
+    },
+    {
+        "key": "L",
+        "label": "\uE0A4 + \uE0A0"
+    },
+    {
+        "key": "ZR",
+        "label": "\uE0A7 + \uE0A0"
+    },
+    {
+        "key": "ZL",
+        "label": "\uE0A6 + \uE0A0"
+    }
+]

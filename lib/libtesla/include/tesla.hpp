@@ -197,7 +197,7 @@ bool updateMenuCombos = false;
 //    }
 //}
 
-// English string definitions
+// Korean string definitions
 
 const std::string whiteColor = "#FFFFFF";
 const std::string blackColor = "#000000";
@@ -207,223 +207,245 @@ constexpr float M_PI = 3.14159265358979323846;
 constexpr float RAD_TO_DEG = 180.0f / M_PI;
 
 static std::string DEFAULT_CHAR_WIDTH = "0.33";
-static std::string UNAVAILABLE_SELECTION = "Not available";
-static std::string OVERLAYS = "Overlays"; //defined in libTesla now
-static std::string OVERLAY = "Overlay";
-static std::string HIDDEN_OVERLAYS = "Hidden Overlays";
-static std::string PACKAGES = "Packages"; //defined in libTesla now
-static std::string PACKAGE = "Package";
-static std::string HIDDEN_PACKAGES = "Hidden Packages";
-static std::string HIDDEN = "Hidden";
-static std::string HIDE_OVERLAY = "Hide Overlay";
-static std::string HIDE_PACKAGE = "Hide Package";
-static std::string LAUNCH_ARGUMENTS = "Launch Arguments";
-static std::string COMMANDS = "Commands";
-static std::string SETTINGS = "Settings";
-static std::string MAIN_SETTINGS = "Main Settings";
-static std::string UI_SETTINGS = "UI Settings";
-static std::string WIDGET = "Widget";
-static std::string CLOCK = "Clock";
-static std::string BATTERY = "Battery";
-static std::string SOC_TEMPERATURE = "SOC Temperature";
-static std::string PCB_TEMPERATURE = "PCB Temperature";
-static std::string MISCELLANEOUS = "Miscellaneous";
-static std::string MENU_ITEMS = "Menu Items";
-static std::string USER_GUIDE = "User Guide";
-static std::string VERSION_LABELS = "Version Labels";
-static std::string KEY_COMBO = "Key Combo";
-static std::string LANGUAGE = "Language";
-static std::string OVERLAY_INFO = "Overlay Info";
-static std::string SOFTWARE_UPDATE = "Software Update";
-static std::string UPDATE_ULTRAHAND = "Update Ultrahand";
-static std::string UPDATE_LANGUAGES = "Update Languages";
-static std::string THEME = "Theme";
-static std::string DEFAULT = "default";
-static std::string ROOT_PACKAGE = "Root Package";
-static std::string SORT_PRIORITY = "Sort Priority";
-static std::string FAILED_TO_OPEN = "Failed to open file";
-static std::string CLEAN_VERSIONS = "Clean Versions";
-static std::string OVERLAY_VERSIONS = "Overlay Versions";
-static std::string PACKAGE_VERSIONS = "Package Versions";
-static std::string OPAQUE_SCREENSHOTS = "Opaque Screenshots";
-static std::string ON = "On";
-static std::string OFF = "Off";
-static std::string PACKAGE_INFO = "Package Info";
-static std::string TITLE = "Title";
-static std::string VERSION = "Version";
-static std::string CREATOR = "Creator(s)";
-static std::string ABOUT = "About";
-static std::string CREDITS = "Credits";
-static std::string OK = "OK";
-static std::string BACK = "Back";
-static std::string REBOOT = "Reboot";
-static std::string SHUTDOWN = "Shutdown";
+static std::string UNAVAILABLE_SELECTION = "설정 없음";
+static std::string OVERRIDE_SELECTION = "설정 안 함";
+static std::string DEFAULT_SELECTION = "기본";
+static std::string AUTO_SELECTION = "자동";
+static std::string OVERLAYS = "오버레이"; //defined in libTesla now
+static std::string OVERLAY = "오버레이";
+static std::string HIDDEN_OVERLAYS = "숨겨진 오버레이";
+static std::string PACKAGES = "패키지"; //defined in libTesla now
+static std::string PACKAGE = "패키지";
+static std::string HIDDEN_PACKAGES = "숨겨진 패키지";
+static std::string HIDDEN = "숨김";
+static std::string HIDE_OVERLAY = "오버레이 숨김";
+static std::string HIDE_PACKAGE = "패키지 숨김";
+static std::string LAUNCH_ARGUMENTS = "실행 매개변수";
+static std::string COMMANDS = "커맨드";
+static std::string SETTINGS = "설정";
+static std::string MAIN_SETTINGS = "메인 설정";
+static std::string UI_SETTINGS = "UI 설정";
+static std::string WIDGET = "위젯";
+static std::string CLOCK = "시각";
+static std::string BATTERY = "배터리";
+static std::string SOC_TEMPERATURE = "소켓 온도";
+static std::string PCB_TEMPERATURE = "기판 온도";
+static std::string MISCELLANEOUS = "기타";
+static std::string MENU_ITEMS = "메뉴 아이템";
+static std::string USER_GUIDE = "사용 설명서";
+static std::string VERSION_LABELS = "버전 표시";
+static std::string KEY_COMBO = "키 조합";
+static std::string LANGUAGE = "언어";
+static std::string OVERLAY_INFO = "오버레이 정보";
+static std::string SOFTWARE_UPDATE = "업데이트";
+static std::string UPDATE_ULTRAHAND = "Ultrahand";
+static std::string UPDATE_APPS = "App+";
+static std::string UPDATE_PACKAGES = "Package+";
+static std::string UPDATE_UPDATER = "Tester+";
+static std::string REBOOT_CFW = "커펌 (eMMC/SD Card)";
+static std::string UPDATE_LANGUAGES = "언어 업데이트";
+static std::string THEME = "테마";
+static std::string DEFAULT = "기본";
+static std::string ROOT_PACKAGE = "Launcher+";
+static std::string SORT_PRIORITY = "우선순위 정렬";
+static std::string FAILED_TO_OPEN = "파일 열기 실패";
+static std::string CLEAN_VERSIONS = "정리된 버전";
+static std::string OVERLAY_VERSIONS = "오버레이 버전";
+static std::string PACKAGE_VERSIONS = "패키지 버전";
+static std::string OPAQUE_SCREENSHOTS = "스크린샷";
+static std::string ON = "\uE14B";
+static std::string OFF = "\uE14C";
+static std::string ASAP_PACKAGE = "ASAP 패키지";
+static std::string PACKAGE_INFO = "패키지 정보";
+static std::string TITLE = "이름";
+static std::string VERSION = "버전";
+static std::string CREATOR = "개발자";
+static std::string ABOUT = "설명";
+static std::string CREDITS = "크레딧";
+static std::string OK = "확인";
+static std::string BACK = "뒤로";
+static std::string REBOOT = "재부팅";
+static std::string SHUTDOWN = "전원 종료";
 static std::string GAP_1 = "     ";
 static std::string GAP_2 = "  ";
-static std::string USERGUIDE_OFFSET = "168";
-static std::string SETTINGS_MENU = "Settings Menu";
-static std::string SCRIPT_OVERLAY = "Script Overlay";
-static std::string STAR_FAVORITE = "Star/Favorite";
-static std::string APP_SETTINGS = "App Settings";
-static std::string ON_MAIN_MENU = "on Main Menu";
-static std::string ON_A_COMMAND = "on a command";
-static std::string ON_OVERLAY_PACKAGE = "on overlay/package";
-static std::string EFFECTS = "Effects";
-static std::string PROGRESS_ANIMATION = "Progress Animation";
-static std::string EMPTY = "Empty";
+static std::string USERGUIDE_OFFSET = "190";
+static std::string EXTRA_SETTING = "Extra Setting+";
+static std::string SYSTEM_CLOCK = "System Clock+";
+static std::string OC_TOOLKIT = "SC│EOS Toolkit";
+static std::string LAUNCHER_PLUS = "Launcher+";
+static std::string SETTINGS_MENU = "설정│즐겨찾기";
+static std::string EXTRA_SETTING_GUIDE = "업데이트 사후 설정";
+static std::string SYSTEM_CLOCK_GUIDE = "언더│오버클럭 전환";
+static std::string TOOLKIT_GUIDE = "loader.kip 편집";
+static std::string LAUNCHER_PLUS_GUIDE = "빠른 재부팅│UMS";
+static std::string ON_MAIN_MENU = "버튼";
+static std::string EFFECTS = "이펙트";
+static std::string PROGRESS_ANIMATION = "애니메이션";
+static std::string EMPTY = "비어있음";
 
-static std::string SUNDAY = "Sunday";
-static std::string MONDAY = "Monday";
-static std::string TUESDAY = "Tuesday";
-static std::string WEDNESDAY = "Wednesday";
-static std::string THURSDAY = "Thursday";
-static std::string FRIDAY = "Friday";
-static std::string SATURDAY = "Saturday";
+static std::string SUNDAY = "일요일";
+static std::string MONDAY = "월요일";
+static std::string TUESDAY = "화요일";
+static std::string WEDNESDAY = "수요일";
+static std::string THURSDAY = "목요일";
+static std::string FRIDAY = "금요일";
+static std::string SATURDAY = "토요일";
 
-static std::string JANUARY = "January";
-static std::string FEBRUARY = "February";
-static std::string MARCH = "March";
-static std::string APRIL = "April";
-static std::string MAY = "May";
-static std::string JUNE = "June";
-static std::string JULY = "July";
-static std::string AUGUST = "August";
-static std::string SEPTEMBER = "September";
-static std::string OCTOBER = "October";
-static std::string NOVEMBER = "November";
-static std::string DECEMBER = "December";
+static std::string JANUARY = "1월";
+static std::string FEBRUARY = "2월";
+static std::string MARCH = "3월";
+static std::string APRIL = "4월";
+static std::string MAY = "5월";
+static std::string JUNE = "6월";
+static std::string JULY = "7월";
+static std::string AUGUST = "8월";
+static std::string SEPTEMBER = "9월";
+static std::string OCTOBER = "10월";
+static std::string NOVEMBER = "11월";
+static std::string DECEMBER = "12월";
 
-static std::string SUN = "Sun";
-static std::string MON = "Mon";
-static std::string TUE = "Tue";
-static std::string WED = "Wed";
-static std::string THU = "Thu";
-static std::string FRI = "Fri";
-static std::string SAT = "Sat";
+static std::string SUN = " 日";
+static std::string MON = " 月";
+static std::string TUE = " 火";
+static std::string WED = " 水";
+static std::string THU = " 木";
+static std::string FRI = " 金";
+static std::string SAT = " 土";
 
-static std::string JAN = "Jan";
-static std::string FEB = "Feb";
-static std::string MAR = "Mar";
-static std::string APR = "Apr";
-static std::string MAY_ABBR = "May";
-static std::string JUN = "Jun";
-static std::string JUL = "Jul";
-static std::string AUG = "Aug";
-static std::string SEP = "Sep";
-static std::string OCT = "Oct";
-static std::string NOV = "Nov";
-static std::string DEC = "Dec";
+static std::string JAN = "1월";
+static std::string FEB = "2월";
+static std::string MAR = "3월";
+static std::string APR = "4월";
+static std::string MAY_ABBR = "5월";
+static std::string JUN = "6월";
+static std::string JUL = "7월";
+static std::string AUG = "8월";
+static std::string SEP = "9월";
+static std::string OCT = "10월";
+static std::string NOV = "11월";
+static std::string DEC = "12월";
 
-// Constant string definitions (English)
-void reinitializeLangVars() {
+// Constant string definitions (Korean)
+/*void reinitializeLangVars() {
     DEFAULT_CHAR_WIDTH = "0.33";
-    UNAVAILABLE_SELECTION = "Not available";
-    OVERLAYS = "Overlays"; //defined in libTesla now
-    OVERLAY = "Overlay";
-    HIDDEN_OVERLAYS = "Hidden Overlays";
-    PACKAGES = "Packages"; //defined in libTesla now
-    PACKAGE = "Package";
-    HIDDEN_PACKAGES = "Hidden Packages";
-    HIDDEN = "Hidden";
-    HIDE_OVERLAY = "Hide Overlay";
-    HIDE_PACKAGE = "Hide Package";
-    LAUNCH_ARGUMENTS = "Launch Arguments";
-    COMMANDS = "Commands";
-    SETTINGS = "Settings";
-    MAIN_SETTINGS = "Main Settings";
-    UI_SETTINGS = "UI Settings";
-    WIDGET = "Widget";
-    CLOCK = "Clock";
-    BATTERY = "Battery";
-    SOC_TEMPERATURE = "SOC Temperature";
-    PCB_TEMPERATURE = "PCB Temperature";
-    MISCELLANEOUS = "Miscellaneous";
-    MENU_ITEMS = "Menu Items";
-    USER_GUIDE = "User Guide";
-    VERSION_LABELS = "Version Labels";
-    KEY_COMBO = "Key Combo";
-    LANGUAGE = "Language";
-    OVERLAY_INFO = "Overlay Info";
-    SOFTWARE_UPDATE = "Software Update";
-    UPDATE_ULTRAHAND = "Update Ultrahand";
-    UPDATE_LANGUAGES = "Update Languages";
-    THEME = "Theme";
-    DEFAULT = "default";
-    ROOT_PACKAGE = "Root Package";
-    SORT_PRIORITY = "Sort Priority";
-    FAILED_TO_OPEN = "Failed to open file";
-    CLEAN_VERSIONS = "Clean Versions";
-    OVERLAY_VERSIONS = "Overlay Versions";
-    PACKAGE_VERSIONS = "Package Versions";
-    OPAQUE_SCREENSHOTS = "Opaque Screenshots";
-    ON = "On";
-    OFF = "Off";
-    PACKAGE_INFO = "Package Info";
-    TITLE = "Title";
-    VERSION = "Version";
-    CREATOR = "Creator(s)";
-    ABOUT = "About";
-    CREDITS = "Credits";
-    OK = "OK";
-    BACK = "Back";
-    REBOOT = "Reboot";
-    SHUTDOWN = "Shutdown";
+    UNAVAILABLE_SELECTION = "이용 불가";
+    OVERRIDE_SELECTION = "설정 안 함";
+    DEFAULT_SELECTION = "기본";
+    AUTO_SELECTION = "자동";
+    OVERLAYS = "오버레이"; //defined in libTesla now
+    OVERLAY = "오버레이";
+    HIDDEN_OVERLAYS = "숨겨진 오버레이";
+    PACKAGES = "패키지"; //defined in libTesla now
+    PACKAGE = "패키지";
+    HIDDEN_PACKAGES = "숨겨진 패키지";
+    HIDDEN = "숨김";
+    HIDE_OVERLAY = "오버레이 숨김";
+    HIDE_PACKAGE = "패키지 숨김";
+    LAUNCH_ARGUMENTS = "실행 매개변수";
+    COMMANDS = "커맨드";
+    SETTINGS = "설정";
+    MAIN_SETTINGS = "메인 설정";
+    UI_SETTINGS = "UI 설정";
+    WIDGET = "위젯";
+    CLOCK = "시각";
+    BATTERY = "배터리";
+    SOC_TEMPERATURE = "소켓 온도";
+    PCB_TEMPERATURE = "기판 온도";
+    MISCELLANEOUS = "기타";
+    MENU_ITEMS = "메뉴 아이템";
+    USER_GUIDE = "사용 설명서";
+    VERSION_LABELS = "버전 표시";
+    KEY_COMBO = "키 조합";
+    LANGUAGE = "언어";
+    OVERLAY_INFO = "오버레이 정보";
+    SOFTWARE_UPDATE = "소프트웨어 업데이트";
+    UPDATE_ULTRAHAND = "Ultrahand";
+    UPDATE_APPS = "App+";
+    UPDATE_PACKAGES = "Package+";
+    UPDATE_UPDATER = "Tester+";
+    REBOOT_CFW = "커펌 (eMMC/SD Card)";
+    UPDATE_LANGUAGES = "언어 업데이트";
+    THEME = "테마";
+    DEFAULT = "기본";
+    ROOT_PACKAGE = "Launcher+";
+    SORT_PRIORITY = "우선순위 정렬";
+    FAILED_TO_OPEN = "파일 열기 실패";
+    CLEAN_VERSIONS = "정리된 버전";
+    OVERLAY_VERSIONS = "오버레이 버전";
+    PACKAGE_VERSIONS = "패키지 버전";
+    OPAQUE_SCREENSHOTS = "스크린샷";
+    ON = "\uE14B";
+    OFF = "\uE14C";
+    ASAP_PACKAGE = "ASAP 패키지";
+    PACKAGE_INFO = "패키지 정보";
+    TITLE = "이름";
+    VERSION = "버전";
+    CREATOR = "개발자";
+    ABOUT = "설명";
+    CREDITS = "크레딧";
+    OK = "확인";
+    BACK = "뒤로";
+    REBOOT = "재부팅";
+    SHUTDOWN = "전원 종료";
     GAP_1 = "     ";
     GAP_2 = "  ";
-    USERGUIDE_OFFSET = "168";
-    SETTINGS_MENU = "Settings Menu";
-    SCRIPT_OVERLAY = "Script Overlay";
-    STAR_FAVORITE = "Star/Favorite";
-    APP_SETTINGS = "App Settings";
-    ON_MAIN_MENU = "on Main Menu";
-    ON_A_COMMAND = "on a command";
-    ON_OVERLAY_PACKAGE = "on overlay/package";
-    EFFECTS = "Effects";
-    PROGRESS_ANIMATION = "Progress Animation";
-    EMPTY = "Empty";
+    USERGUIDE_OFFSET = "180";
+    EXTRA_SETTING = "Extra Setting+";
+    SYSTEM_CLOCK = "System Clock+";
+    OC_TOOLKIT = "SC│EOS Toolkit";
+    LAUNCHER_PLUS = "Launcher+";
+    SETTINGS_MENU = "설정│즐겨찾기";
+    EXTRA_SETTING_GUIDE = "업데이트 사후 설정";
+    SYSTEM_CLOCK_GUIDE = "언더│오버클럭 전환";
+    TOOLKIT_GUIDE = "loader.kip 편집";
+    LAUNCHER_PLUS_GUIDE = "빠른 재부팅│UMS";
+    ON_MAIN_MENU = "버튼";
+    EFFECTS = "이펙트";
+    PROGRESS_ANIMATION = "애니메이션";
+    EMPTY = "비어있음";
 
-    SUNDAY = "Sunday";
-    MONDAY = "Monday";
-    TUESDAY = "Tuesday";
-    WEDNESDAY = "Wednesday";
-    THURSDAY = "Thursday";
-    FRIDAY = "Friday";
-    SATURDAY = "Saturday";
+    SUNDAY = "일요일";
+    MONDAY = "월요일";
+    TUESDAY = "화요일";
+    WEDNESDAY = "수요일";
+    THURSDAY = "목요일";
+    FRIDAY = "금요일";
+    SATURDAY = "토요일";
     
-    JANUARY = "January";
-    FEBRUARY = "February";
-    MARCH = "March";
-    APRIL = "April";
-    MAY = "May";
-    JUNE = "June";
-    JULY = "July";
-    AUGUST = "August";
-    SEPTEMBER = "September";
-    OCTOBER = "October";
-    NOVEMBER = "November";
-    DECEMBER = "December";
+    JANUARY = "1월";
+    FEBRUARY = "2월";
+    MARCH = "3월";
+    APRIL = "4월";
+    MAY = "5월";
+    JUNE = "6월";
+    JULY = "7월";
+    AUGUST = "8월";
+    SEPTEMBER = "9월";
+    OCTOBER = "10월";
+    NOVEMBER = "11월";
+    DECEMBER = "12월";
     
-    SUN = "Sun";
-    MON = "Mon";
-    TUE = "Tue";
-    WED = "Wed";
-    THU = "Thu";
-    FRI = "Fri";
-    SAT = "Sat";
+    SUN = "일";
+    MON = "월";
+    TUE = "화";
+    WED = "수";
+    THU = "목";
+    FRI = "금";
+    SAT = "토";
     
-    JAN = "Jan";
-    FEB = "Feb";
-    MAR = "Mar";
-    APR = "Apr";
-    MAY_ABBR = "May";
-    JUN = "Jun";
-    JUL = "Jul";
-    AUG = "Aug";
-    SEP = "Sep";
-    OCT = "Oct";
-    NOV = "Nov";
-    DEC = "Dec";
-}
+    JAN = "1월";
+    FEB = "2월";
+    MAR = "3월";
+    APR = "4월";
+    MAY_ABBR = "5월";
+    JUN = "6월";
+    JUL = "7월";
+    AUG = "8월";
+    SEP = "9월";
+    OCT = "10월";
+    NOV = "11월";
+    DEC = "12월";
+}*/
 
 
 
@@ -436,7 +458,7 @@ void updateIfNotEmpty(std::string& constant, const char* jsonKey, json_t* jsonDa
     }
 }
 
-void parseLanguage(std::string langFile) {
+/*void parseLanguage(std::string langFile) {
     json_t* langData = readJsonFromFile(langFile);
     if (!langData)
         return;
@@ -444,6 +466,9 @@ void parseLanguage(std::string langFile) {
     std::map<std::string, std::string*> configMap = {
         {"DEFAULT_CHAR_WIDTH", &DEFAULT_CHAR_WIDTH},
         {"UNAVAILABLE_SELECTION", &UNAVAILABLE_SELECTION},
+        {"OVERRIDE_SELECTION", &OVERRIDE_SELECTION},
+        {"DEFAULT_SELECTION", &DEFAULT_SELECTION},
+        {"AUTO_SELECTION", &AUTO_SELECTION},
         {"OVERLAYS", &OVERLAYS},
         {"OVERLAY", &OVERLAY},
         {"HIDDEN_OVERLAYS", &HIDDEN_OVERLAYS},
@@ -472,6 +497,10 @@ void parseLanguage(std::string langFile) {
         {"OVERLAY_INFO", &OVERLAY_INFO},
         {"SOFTWARE_UPDATE", &SOFTWARE_UPDATE},
         {"UPDATE_ULTRAHAND", &UPDATE_ULTRAHAND},
+        {"UPDATE_APPS", &UPDATE_APPS},
+        {"UPDATE_PACKAGES", &UPDATE_PACKAGES},
+        {"UPDATE_UPDATER", &UPDATE_UPDATER},
+        {"REBOOT_CFW", &REBOOT_CFW},
         {"UPDATE_LANGUAGES", &UPDATE_LANGUAGES},
         {"THEME", &THEME},
         {"DEFAULT", &DEFAULT},
@@ -484,6 +513,7 @@ void parseLanguage(std::string langFile) {
         {"OPAQUE_SCREENSHOTS", &OPAQUE_SCREENSHOTS},
         {"ON", &ON},
         {"OFF", &OFF},
+        {"ASAP_PACKAGE", &ASAP_PACKAGE},
         {"PACKAGE_INFO", &PACKAGE_INFO},
         {"TITLE", &TITLE},
         {"VERSION", &VERSION},
@@ -497,13 +527,16 @@ void parseLanguage(std::string langFile) {
         {"GAP_1", &GAP_1},
         {"GAP_2", &GAP_2},
         {"USERGUIDE_OFFSET", &USERGUIDE_OFFSET},
+        {"EXTRA_SETTING", &EXTRA_SETTING},
+        {"SYSTEM_CLOCK", &SYSTEM_CLOCK},
+        {"OC_TOOLKIT", &OC_TOOLKIT},
+        {"LAUNCHER_PLUS", &LAUNCHER_PLUS},
         {"SETTINGS_MENU", &SETTINGS_MENU},
-        {"SCRIPT_OVERLAY", &SCRIPT_OVERLAY},
-        {"STAR_FAVORITE", &STAR_FAVORITE},
-        {"APP_SETTINGS", &APP_SETTINGS},
+        {"EXTRA_SETTING_GUIDE", &EXTRA_SETTING_GUIDE},
+        {"SYSTEM_CLOCK_GUIDE", &SYSTEM_CLOCK_GUIDE},
+        {"TOOLKIT_GUIDE", &TOOLKIT_GUIDE},
+        {"LAUNCHER_PLUS_GUIDE", &LAUNCHER_PLUS_GUIDE},
         {"ON_MAIN_MENU", &ON_MAIN_MENU},
-        {"ON_A_COMMAND", &ON_A_COMMAND},
-        {"ON_OVERLAY_PACKAGE", &ON_OVERLAY_PACKAGE},
         {"EFFECTS", &EFFECTS},
         {"PROGRESS_ANIMATION", &PROGRESS_ANIMATION},
         {"EMPTY", &EMPTY},
@@ -557,7 +590,7 @@ void parseLanguage(std::string langFile) {
         json_decref(langData);
         langData = nullptr;
     }
-}
+}*/
 
 
 void localizeTimeStr(char* timeStr) {
@@ -634,7 +667,7 @@ void localizeTimeStr(char* timeStr) {
 
 
 
-//// Map of character widths
+// Map of character widths
 static std::unordered_map<wchar_t, float> characterWidths = {
     {L'°', 0.25},
     //{L'%', 0.98}, // not calibrated
@@ -744,7 +777,7 @@ std::map<std::string, std::string> defaultThemeSettingsMap = {
     {"bg_color", blackColor},
     {"separator_alpha", "15"},
     {"separator_color", "#404040"},
-    {"battery_color", "#ffff45"},
+    {"battery_color", "#50BA81"},
     {"text_color", whiteColor},
     {"header_text_color", whiteColor},
     {"header_separator_color", whiteColor},
@@ -754,9 +787,9 @@ std::map<std::string, std::string> defaultThemeSettingsMap = {
     {"bottom_text_color", whiteColor},
     {"bottom_separator_color", whiteColor},
     {"table_bg_color", "#303030"},
-    {"table_bg_alpha", "10"},
-    {"table_section_text_color", whiteColor},
-    {"table_info_text_color", "#00FFDD"},
+    {"table_bg_alpha", "7"},
+    {"table_section_text_color", "#5DC5FB"},
+    {"table_info_text_color", whiteColor},
     {"warning_text_color", "#FF7777"},
     {"trackbar_slider_color", "#606060"},
     {"trackbar_slider_border_color", "#505050"},
@@ -767,25 +800,25 @@ std::map<std::string, std::string> defaultThemeSettingsMap = {
     {"on_text_color", "#00FFDD"},
     {"off_text_color", "#AAAAAA"},
     {"invalid_text_color", "#FF0000"},
-    {"inprogress_text_color", "#FFFF45"},
+    {"inprogress_text_color", "#3CDD88"},
     {"selection_text_color", whiteColor},
     {"selection_bg_color", blackColor},
     {"selection_bg_alpha", "13"},
     {"trackbar_color", "#555555"},
     {"highlight_color_1", "#2288CC"},
     {"highlight_color_2", "#88FFFF"},
-    {"highlight_color_3", "#FFFF45"},
-    {"highlight_color_4", "#F7253E"},
+    {"highlight_color_3", "#3CDD88"},
+    {"highlight_color_4", "#2CD2B1"},
     {"click_text_color", whiteColor},
-    {"click_alpha", "7"},
-    {"click_color", "#3E25F7"},
+    {"click_alpha", "13"},
+    {"click_color", "#2CD2B1"},
     {"invert_bg_click_color", FALSE_STR},
     {"disable_selection_bg", FALSE_STR},
     {"disable_colorful_logo", FALSE_STR},
-    {"logo_color_1", whiteColor},
-    {"logo_color_2", "#FF0000"},
-    {"dynamic_logo_color_1", "#00E669"},
-    {"dynamic_logo_color_2", "#8080EA"}
+    {"logo_color_1", "#EAEAEA"},
+    {"logo_color_2", whiteColor},
+    {"dynamic_logo_color_1", "#C9F1FF"},
+    {"dynamic_logo_color_2", "#4BCDF9"}
 };
 
 inline bool isNumericCharacter(char c) {
@@ -1087,7 +1120,7 @@ inline bool thermalstatusGetDetailsSOC(s32* temperature) {
 
 // Time implementation
 struct timespec currentTime;
-static const std::string DEFAULT_DT_FORMAT = "'%a %T'";
+static const std::string DEFAULT_DT_FORMAT = "'%T %a'";
 static std::string datetimeFormat = removeQuotes(DEFAULT_DT_FORMAT);
 
 
@@ -1111,7 +1144,7 @@ void reinitializeVersionLabels() {
     cleanVersionLabels = (parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "clean_version_labels") != FALSE_STR);
     hideOverlayVersions = (parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "hide_overlay_versions") != FALSE_STR);
     hidePackageVersions = (parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "hide_package_versions") != FALSE_STR);
-    versionLabel = std::string(APP_VERSION) + "   (" + extractTitle(loaderInfo) + " " + (cleanVersionLabels ? "" : "v") + cleanVersionLabel(loaderInfo) + ")";
+    versionLabel = std::string(APP_VERSION) + " (" + extractTitle(loaderInfo) + " " + (cleanVersionLabels ? "" : "v") + cleanVersionLabel(loaderInfo) + ")";
     //versionLabel = (cleanVersionLabels) ? std::string(APP_VERSION) : (std::string(APP_VERSION) + "   (" + extractTitle(loaderInfo) + " v" + cleanVersionLabel(loaderInfo) + ")");
 }
 
@@ -1174,7 +1207,7 @@ namespace tsl {
         extern u16 FramebufferWidth;            ///< Width of the framebuffer
         extern u16 FramebufferHeight;           ///< Height of the framebuffer
         extern u64 launchCombo;                 ///< Overlay activation key combo
-        extern u64 launchCombo2;                 ///< Overlay activation key combo
+        extern u64 launchCombo2;                ///< Overlay activation key combo
         
     }
     
@@ -1209,8 +1242,8 @@ namespace tsl {
         uint8_t r, g, b, a = 0xFF;
         
         if (temperature < blueStart) { // rgb 7, 7, 15 at blueStart
-            r = 7;
-            g = 7;
+            r = 5;
+            g = 9;
             b = 15;
         } else if (temperature >= blueStart && temperature < greenStart) {
             // Smooth color blending from (7 7 15) to (0 15 0)
@@ -1285,7 +1318,7 @@ namespace tsl {
     
     
     namespace style {
-        constexpr u32 ListItemDefaultHeight         = 70;       ///< Standard list item height
+        constexpr u32 ListItemDefaultHeight         = 69;       ///< Standard list item height
         constexpr u32 TrackBarDefaultHeight         = 84;       ///< Standard track bar height
         constexpr u8  ListItemHighlightSaturation   = 6;        ///< Maximum saturation of Listitem highlights
         constexpr u8  ListItemHighlightLength       = 22;       ///< Maximum length of Listitem highlights
@@ -1306,8 +1339,8 @@ namespace tsl {
 
     // Theme color variable definitions
     static bool disableColorfulLogo = false;
-    static Color logoColor1 = RGB888(whiteColor);
-    static Color logoColor2 = RGB888("#F7253E");
+    static Color logoColor1 = RGB888("#EAEAEA");
+    static Color logoColor2 = RGB888(whiteColor);
     static size_t defaultBackgroundAlpha = 13;
     
     static Color defaultBackgroundColor = RGB888(blackColor, defaultBackgroundAlpha);
@@ -1322,43 +1355,43 @@ namespace tsl {
 
     static Color defaultPackageColor = RGB888("#00FF00");
     static Color clockColor = RGB888(whiteColor);
-    static Color batteryColor = RGB888("#ffff45");
+    static Color batteryColor = RGB888("#50BA81");
     static Color versionTextColor = RGB888("#AAAAAA");
     static Color onTextColor = RGB888("#00FFDD");
     static Color offTextColor = RGB888("#AAAAAA");
     
-    static std::tuple<float,float,float> dynamicLogoRGB1 = hexToRGB444Floats("#00E669");
-    static std::tuple<float,float,float> dynamicLogoRGB2 = hexToRGB444Floats("#8080EA");
+    static std::tuple<float,float,float> dynamicLogoRGB1 = hexToRGB444Floats("#C9F1FF");
+    static std::tuple<float,float,float> dynamicLogoRGB2 = hexToRGB444Floats("#4BCDF9");
 
     static bool disableSelectionBG = false;
     static bool invertBGClickColor = false;
 
-    static size_t selectionBGAlpha = 7;
+    static size_t selectionBGAlpha = 13;
     static Color selectionBGColor = RGB888(blackColor, selectionBGAlpha);
 
     static Color highlightColor1 = RGB888("#2288CC");
     static Color highlightColor2 = RGB888("#88FFFF");
-    static Color highlightColor3 = RGB888("#FFFF45");
-    static Color highlightColor4 = RGB888("#F7253E");
+    static Color highlightColor3 = RGB888("#3CDD88");
+    static Color highlightColor4 = RGB888("#2CD2B1");
 
     static Color highlightColor = tsl::style::color::ColorHighlight;
     
-    static size_t clickAlpha = 7;
+    static size_t clickAlpha = 13;
 
-    static Color clickColor = RGB888("#3E25F7", clickAlpha);
+    static Color clickColor = RGB888("#2CD2B1", clickAlpha);
     static Color trackBarColor = RGB888("#555555");
 
     static size_t separatorAlpha = 15;
     
     static Color separatorColor = RGB888("#404040", separatorAlpha);
     static Color selectedTextColor = RGB888(whiteColor);
-    static Color inprogressTextColor = RGB888(whiteColor);
+    static Color inprogressTextColor = RGB888("#3CDD88");
     static Color invalidTextColor = RGB888("#FF0000");
     static Color clickTextColor = RGB888(whiteColor);
 
     static size_t tableBGAlpha = 7;
     static Color tableBGColor = RGB888("#303030", tableBGAlpha);
-    static Color sectionTextColor = RGB888("#e9ff40");
+    static Color sectionTextColor = RGB888("#5DC5FB");
     static Color infoTextColor = RGB888(whiteColor);
     static Color warningTextColor = RGB888("#FF7777");
 
@@ -1412,37 +1445,37 @@ namespace tsl {
 
             clockColor = getColor("clock_color");
             batteryColor = getColor("battery_color");
-            
+
             versionTextColor = getColor("version_text_color");
             onTextColor = getColor("on_text_color");
             offTextColor = getColor("off_text_color");
-            
+
             dynamicLogoRGB1 = hexToRGB444Floats(getValue("dynamic_logo_color_1"));
             dynamicLogoRGB2 = hexToRGB444Floats(getValue("dynamic_logo_color_2"));
-            
+
             disableSelectionBG = (getValue("disable_selection_bg") == TRUE_STR);
             invertBGClickColor = (getValue("invert_bg_click_color") == TRUE_STR);
 
             selectionBGAlpha = getAlpha("selection_bg_alpha");
             selectionBGColor = getColor("selection_bg_color", selectionBGAlpha);
-            
+
             highlightColor1 = getColor("highlight_color_1");
             highlightColor2 = getColor("highlight_color_2");
             highlightColor3 = getColor("highlight_color_3");
             highlightColor4 = getColor("highlight_color_4");
-            
+
             clickAlpha = getAlpha("click_alpha");
             clickColor = getColor("click_color", clickAlpha);
             trackBarColor = getColor("trackbar_color");
-            
+
             separatorAlpha = getAlpha("separator_alpha");
             separatorColor = getColor("separator_color", separatorAlpha);
-            
+
             selectedTextColor = getColor("selection_text_color");
             inprogressTextColor = getColor("inprogress_text_color");
             invalidTextColor = getColor("invalid_text_color");
             clickTextColor = getColor("click_text_color");
-            
+
             tableBGAlpha = getAlpha("table_bg_alpha");
             tableBGColor = getColor("table_bg_color", tableBGAlpha);
             sectionTextColor = getColor("table_section_text_color");
@@ -2228,7 +2261,7 @@ namespace tsl {
 
 
 
-            
+
 
             
             inline void drawUniformRoundedRect(float x, float y, float w, float h, Color color) {
@@ -2485,7 +2518,7 @@ namespace tsl {
                 maxX = std::max(currX, maxX);
                 return { static_cast<u32>(maxX - x), static_cast<u32>(currY - y) };
             }
-            
+
             
             inline void drawStringWithColoredSections(const std::string& text, const std::vector<std::string>& specialSymbols, s32 x, s32 y, u32 fontSize, Color defaultColor, Color specialColor) {
                 size_t startPos = 0;
@@ -2820,16 +2853,8 @@ namespace tsl {
                     TSL_R_TRY(setMakeLanguage(languageCode, &setLanguage));
                     this->m_hasLocalFont = true;
                     switch (setLanguage) {
-                    case SetLanguage_ZHCN:
-                    case SetLanguage_ZHHANS:
-                        TSL_R_TRY(plGetSharedFontByType(&localFontData, PlSharedFontType_ChineseSimplified));
-                        break;
                     case SetLanguage_KO:
                         TSL_R_TRY(plGetSharedFontByType(&localFontData, PlSharedFontType_KO));
-                        break;
-                    case SetLanguage_ZHTW:
-                    case SetLanguage_ZHHANT:
-                        TSL_R_TRY(plGetSharedFontByType(&localFontData, PlSharedFontType_ChineseTraditional));
                         break;
                     default:
                         this->m_hasLocalFont = false;
@@ -3481,7 +3506,7 @@ namespace tsl {
             
             
             //std::string firstHalf, secondHalf;
-            //tsl::Color handColor = RGB888("#F7253E");
+            //tsl::Color handColor = RGB888("#99CEFA");
             tsl::Color titleColor = {0xF,0xF,0xF,0xF};
             const double cycleDuration = 1.5;
             float counter = 0;
@@ -3514,13 +3539,13 @@ namespace tsl {
             // CUSTOM SECTION START
             virtual void draw(gfx::Renderer *renderer) override {
                 renderer->fillScreen(a(defaultBackgroundColor));
-                
 
+                
                 y = 50;
                 offset = 0;
                 
                 bool isUltrahand = (this->m_title == CAPITAL_ULTRAHAND_PROJECT_NAME && 
-                                    this->m_subtitle.find("Ultrahand Package") == std::string::npos && 
+                                    this->m_subtitle.find("ㅤ") == std::string::npos && 
                                     this->m_subtitle.find("Ultrahand Script") == std::string::npos);
                 if (isUltrahand) {
                     if (touchingMenu && inMainMenu) {
@@ -3627,7 +3652,7 @@ namespace tsl {
                     x = 20;
                     y = 50;
                     fontSize = 32;
-                    if (this->m_subtitle.find("Ultrahand Package") != std::string::npos) {
+                    if (this->m_subtitle.find("ㅤ") != std::string::npos) {
                         const std::string& title = this->m_title;
                         titleColor = defaultPackageColor; // Default to green
                         
@@ -3637,25 +3662,28 @@ namespace tsl {
                         };
                         
                         if (this->m_colorSelection == "green") {
-                            titleColor = Color(0x0, 0xF, 0x0, 0xF);
+                            titleColor = RGB888("#009A87");
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "red") {
                             titleColor = RGB888("#F7253E");
                             drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "sky") {
+                            titleColor = RGB888("#99CEFA");
+                            drawTitle(titleColor);
                         } else if (this->m_colorSelection == "blue") {
-                            titleColor = Color(0x7, 0x7, 0xF, 0xF);
+                            titleColor = RGB888("#0593D3");
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "yellow") {
-                            titleColor = Color(0xF, 0xF, 0x0, 0xF);
+                            titleColor = RGB888("#F3C000");
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "orange") {
-                            titleColor = Color(0xFF, 0xA5, 0x00, 0xFF);
+                            titleColor = RGB888("#EF6F53");
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "pink") {
-                            titleColor = Color(0xFF, 0x69, 0xB4, 0xFF);
+                            titleColor = RGB888("#EF5369");
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "purple") {
-                            titleColor = Color(0x80, 0x00, 0x80, 0xFF);
+                            titleColor = RGB888("#6164C6");
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "white") {
                             titleColor = Color(0xF, 0xF, 0xF, 0xF);
@@ -3733,7 +3761,7 @@ namespace tsl {
                         nextPageWidth = renderer->calculateStringWidth(PACKAGES,23);
                     else if (inPackagesPage)
                         nextPageWidth = renderer->calculateStringWidth(OVERLAYS,23);
-
+                
                 if (inMainMenu || !(this->m_pageLeftName).empty() || !(this->m_pageRightName).empty()) {
                     if (touchingNextPage) {
                         renderer->drawRoundedRect(18.0f + backWidth+68.0f + selectWidth+68.0f, static_cast<float>(cfg::FramebufferHeight - 73), 
@@ -4852,7 +4880,7 @@ namespace tsl {
                 if (allowSlide || m_unlockedTrackbar) {
                     if ((keysReleased & HidNpadButton_AnyLeft) || (keysReleased & HidNpadButton_AnyRight)) {
                         //if (!m_executeOnEveryTick)
-                        updateAndExecute();
+                            updateAndExecute();
                         holding = false;
                         return true;
                     }
@@ -4931,7 +4959,7 @@ namespace tsl {
                 //}
                 if (event == TouchEvent::Release) {
                     //if (!m_executeOnEveryTick)
-                    updateAndExecute();
+                        updateAndExecute();
                     this->m_interactionLocked = false;
                     touchInSliderBounds = false;
                     return false;
@@ -5205,7 +5233,7 @@ namespace tsl {
                 if (allowSlide || m_unlockedTrackbar) {
                     if ((keysReleased & HidNpadButton_AnyLeft) || (keysReleased & HidNpadButton_AnyRight)) {
                         //if (!m_executeOnEveryTick)
-                        updateAndExecute();
+                            updateAndExecute();
                         holding = false;
                         tick = 0;
                         return true;
@@ -5337,7 +5365,7 @@ namespace tsl {
                 u16 baseY = this->getY() + 44; // 50 - 3
                 // Calculate the halfway point
                 u8 halfNumSteps = (this->m_numSteps - 1) / 2;
-
+                
                 // Draw step rectangles
                 for (u8 i = 0; i < this->m_numSteps; i++) {
                     u16 stepX = baseX + std::round(i * (trackBarWidth / (this->m_numSteps - 1)));
@@ -5354,7 +5382,7 @@ namespace tsl {
                 // Draw the parent trackbar
                 StepTrackBar::draw(renderer);
             }
-
+            
             
         protected:
             std::vector<std::string> m_stepDescriptions;
@@ -5876,7 +5904,7 @@ namespace tsl {
 
             if (hasScrolled) {
                 bool singleArrowKeyPress = ((keysHeld & HidNpadButton_AnyUp) != 0) + ((keysHeld & HidNpadButton_AnyDown) != 0) + ((keysHeld & HidNpadButton_AnyLeft) != 0) + ((keysHeld & HidNpadButton_AnyRight) != 0) == 1;
-                
+                    
                 
                 if (singleArrowKeyPress) {
                     auto now = std::chrono::high_resolution_clock::now();
@@ -5957,7 +5985,7 @@ namespace tsl {
             if (!touchDetected && oldTouchDetected && currentGui && topElement) {
                 topElement->onTouch(elm::TouchEvent::Release, oldTouchPos.x, oldTouchPos.y, oldTouchPos.x, oldTouchPos.y, initialTouchPos.x, initialTouchPos.y);
             }
-
+            
             touchingBack = (touchPos.x >= 20.0f && touchPos.x < backWidth+86.0f && touchPos.y > cfg::FramebufferHeight - 73U) && (initialTouchPos.x >= 20.0f && initialTouchPos.x < backWidth+86.0f&& initialTouchPos.y > cfg::FramebufferHeight - 73U);
             touchingSelect = (touchPos.x >= backWidth+86.0f && touchPos.x < (backWidth+86.0f + selectWidth+68.0f) && touchPos.y > cfg::FramebufferHeight - 73U) && (initialTouchPos.x >=  backWidth+86.0f && initialTouchPos.x < (backWidth+86.0f + selectWidth+68.0f) && initialTouchPos.y > cfg::FramebufferHeight - 73U);
             touchingNextPage = (touchPos.x >= (backWidth+86.0f + selectWidth+68.0f) && (touchPos.x <= backWidth+86.0f + selectWidth+68.0f +nextPageWidth+70.0f) && touchPos.y > cfg::FramebufferHeight - 73U) && (initialTouchPos.x >= (backWidth+86.0f + selectWidth+68.0f) && (initialTouchPos.x <= backWidth+86.0f + selectWidth+68.0f +nextPageWidth+70.0f) && initialTouchPos.y > cfg::FramebufferHeight - 73U);
@@ -6140,8 +6168,8 @@ namespace tsl {
     
     
     namespace impl {
-        static const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini"; // CUSTOM MODIFICATION
-        static const char* ULTRAHAND_CONFIG_FILE = "/config/ultrahand/config.ini"; // CUSTOM MODIFICATION
+        //static const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini"; // CUSTOM MODIFICATION
+        static const char* ULTRAHAND_CONFIG_FILE = "/config/ASAP-assist/ultrahand/config.ini"; // CUSTOM MODIFICATION
         
         /**
          * @brief Data shared between the different threads
@@ -6193,11 +6221,11 @@ namespace tsl {
          */
         [[maybe_unused]] static void updateCombo(u64 keys) {
             tsl::cfg::launchCombo = keys;
-            hlp::ini::updateOverlaySettings({
+            /*hlp::ini::updateOverlaySettings({
                 { TESLA_STR, { // CUSTOM MODIFICATION
                     { KEY_COMBO_STR, tsl::hlp::keysToComboString(keys) }
                 }}
-            }, TESLA_CONFIG_FILE);
+            }, TESLA_CONFIG_FILE);*/
             hlp::ini::updateOverlaySettings({
                 { ULTRAHAND_PROJECT_NAME, { // CUSTOM MODIFICATION
                     { KEY_COMBO_STR, tsl::hlp::keysToComboString(keys) }
@@ -6281,8 +6309,8 @@ namespace tsl {
                     if (updateMenuCombos) {  // CUSTOM MODIFICATION
                         if ((shData->keysHeld & tsl::cfg::launchCombo2) == tsl::cfg::launchCombo2) {
                             tsl::cfg::launchCombo = tsl::cfg::launchCombo2;
-                            setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR, TESLA_COMBO_STR);
-                            setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, TESLA_COMBO_STR);
+                            setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR, ULTRAHAND_COMBO_STR);
+                            //setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, TESLA_COMBO_STR);
                             eventFire(&shData->comboEvent);
                             updateMenuCombos = false;
                         }
@@ -6291,7 +6319,7 @@ namespace tsl {
                     if ((((shData->keysHeld & tsl::cfg::launchCombo) == tsl::cfg::launchCombo) && shData->keysDown & tsl::cfg::launchCombo)) {
                         if (updateMenuCombos) {
                             setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR, ULTRAHAND_COMBO_STR);
-                            setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, ULTRAHAND_COMBO_STR);
+                            //setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, ULTRAHAND_COMBO_STR);
                             updateMenuCombos = false;
                         }
                         
@@ -6505,8 +6533,8 @@ namespace tsl::cfg {
     u16 LayerPosY   = 0;
     u16 FramebufferWidth  = 0;
     u16 FramebufferHeight = 0;
-    u64 launchCombo = KEY_ZL | KEY_ZR | KEY_DDOWN;
-    u64 launchCombo2 = KEY_L | KEY_DDOWN | KEY_RSTICK;
+    u64 launchCombo = KEY_L | KEY_DDOWN | KEY_RSTICK;
+    u64 launchCombo2 = KEY_ZL | KEY_ZR | KEY_DDOWN;
 }
 extern "C" void __libnx_init_time(void);
 

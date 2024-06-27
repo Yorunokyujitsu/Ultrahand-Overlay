@@ -43,7 +43,7 @@ static std::atomic<bool> triggerExit(false);
  *
  * - `PACKAGE_FILENAME`: The name of the package file ("package.ini").
  * - `CONFIG_FILENAME`: The name of the configuration file ("config.ini").
- * - `SETTINGS_PATH`: The base path for Ultrahand settings ("sdmc:/config/ultrahand/").
+ * - `SETTINGS_PATH`: The base path for Ultrahand settings ("sdmc:/config/ASAP-assist/ultrahand/").
  * - `ULTRAHAND_CONFIG_INI_PATH`: The full path to the Ultrahand settings configuration file.
  * - `PACKAGE_PATH`: The base directory for packages ("sdmc:/switch/.packages/").
  * - `OVERLAY_PATH`: The base directory for overlays ("sdmc:/switch/.overlays/").
@@ -135,10 +135,10 @@ void copyTeslaKeyComboToUltrahand() {
     std::string keyCombo = ULTRAHAND_COMBO_STR;
     std::map<std::string, std::map<std::string, std::string>> parsedData;
     
-    bool teslaConfigExists = isFileOrDirectory(TESLA_CONFIG_INI_PATH);
+    //bool teslaConfigExists = isFileOrDirectory(TESLA_CONFIG_INI_PATH);
     bool ultrahandConfigExists = isFileOrDirectory(ULTRAHAND_CONFIG_INI_PATH);
 
-    bool initializeTesla = false;
+    /*bool initializeTesla = false;
     std::string teslaKeyCombo = keyCombo;
 
     if (teslaConfigExists) {
@@ -155,7 +155,7 @@ void copyTeslaKeyComboToUltrahand() {
         }
     } else {
         initializeTesla = true;
-    }
+    }*/
     
     bool initializeUltrahand = false;
     if (ultrahandConfigExists) {
@@ -174,9 +174,9 @@ void copyTeslaKeyComboToUltrahand() {
         initializeUltrahand = true;
     }
 
-    if (initializeTesla || (teslaKeyCombo != keyCombo)) {
+    /*if (initializeTesla || (teslaKeyCombo != keyCombo)) {
         setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, keyCombo);
-    }
+    }*/
 
     if (initializeUltrahand) {
         setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR, keyCombo);
@@ -415,17 +415,19 @@ void addHelpInfo(std::unique_ptr<tsl::elm::List>& list) {
 
     // Define the section lines and info lines directly
     const std::vector<std::string> sectionLines = {
-        SETTINGS_MENU,
-        SCRIPT_OVERLAY,
-        STAR_FAVORITE,
-        APP_SETTINGS
+        EXTRA_SETTING,
+        SYSTEM_CLOCK,
+        OC_TOOLKIT,
+        LAUNCHER_PLUS,
+        SETTINGS_MENU
     };
 
     const std::vector<std::string> infoLines = {
-        "\uE0B5 (" + ON_MAIN_MENU + ")",
-        "\uE0B6 (" + ON_A_COMMAND + ")",
-        "\uE0E2 (" + ON_OVERLAY_PACKAGE + ")",
-        "\uE0E3 (" + ON_OVERLAY_PACKAGE + ")"
+        EXTRA_SETTING_GUIDE,
+        SYSTEM_CLOCK_GUIDE,
+        TOOLKIT_GUIDE,
+        LAUNCHER_PLUS_GUIDE,
+        "\uE0B5 · \uE0E3│\uE0E2 " + ON_MAIN_MENU
     };
 
     // Draw the table with the defined lines
@@ -626,7 +628,25 @@ std::vector<std::pair<std::string, std::vector<std::vector<std::string>>>> loadO
     if (!configFile && makeConfig) {
         std::ofstream configFileOut(configIniPath);
         if (configFileOut) {
-            configFileOut << "[Reboot]\nreboot\n\n[Shutdown]\nshutdown\n";
+            configFileOut << "[Launcher+]\n"
+                          << "[*재부팅]\n"
+                          << "[에뮤/시스낸드 (커펌)]\n"
+                          << "reboot boot '커펌 (eMMC/SD Card)'\n"
+                          << "[시스낸드 (정펌)]\n"
+                          << "reboot boot '정펌 (eMMC)'\n"
+                          << "[Hekate (메인메뉴)]\n"
+                          << "reboot HEKATE\n"
+                          << "[Hekate (UMS)]\n"
+                          << "reboot UMS\n"
+                          << "[Lineage (안드로이드)]\n"
+                          << "reboot ini 'Lineage OS (안드로이드)'\n"
+                          << "[Lakka (에뮬레이터)]\n"
+                          << "reboot ini 'Lakka (에뮬레이터)'\n"
+                          << "[Ubuntu (리눅스)]\n"
+                          << "reboot ini 'Ubuntu (리눅스)'\n\n"
+                          << "[Launcher+]\n"
+                          << "[전원 종료]\n"
+                          << "shutdown";
             //configFileOut << "[*Reboot]\n[HOS Reboot]\nreboot\n[Hekate Reboot]\nreboot HEKATE\n[UMS Reboot]\nreboot UMS\n\n[Commands]\n[Shutdown]\nshutdown";
             configFileOut.close();
         }
@@ -1306,7 +1326,7 @@ void processCommand(const std::vector<std::string>& cmd, const std::string& pack
             
             setIniFileKey(sourcePath.c_str(), desiredSection.c_str(), desiredKey.c_str(), desiredNewKey.c_str());
         }
-    }else if (commandName == "set-footer") {
+    } else if (commandName == "set-footer") {
         if (cmdSize >= 2) {
             std::string desiredValue = removeQuotes(cmd[1]);
             setIniFileValue((packagePath+CONFIG_FILENAME).c_str(), selectedCommand.c_str(), FOOTER_STR, desiredValue.c_str());
