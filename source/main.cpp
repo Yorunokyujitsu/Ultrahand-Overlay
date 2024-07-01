@@ -2852,7 +2852,7 @@ public:
                 
                 setDefaultValue(ultrahandSection, "hide_user_guide", FALSE_STR, hideUserGuide);
                 setDefaultValue(ultrahandSection, "clean_version_labels", TRUE_STR, cleanVersionLabels);
-                setDefaultValue(ultrahandSection, "hide_overlay_versions", FALSE_STR, hideOverlayVersions);
+                setDefaultValue(ultrahandSection, "hide_overlay_versions", TRUE_STR, hideOverlayVersions);
                 setDefaultValue(ultrahandSection, "hide_package_versions", TRUE_STR, hidePackageVersions);
                 setDefaultValue(ultrahandSection, "opaque_screenshots", TRUE_STR, useOpaqueScreenshots);
                 setDefaultValue(ultrahandSection, "progress_animation", TRUE_STR, progressAnimation);
