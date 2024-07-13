@@ -51,7 +51,7 @@ bool usingMariko = util::IsMariko();
  *
  * - `PACKAGE_FILENAME`: The name of the package file ("package.ini").
  * - `CONFIG_FILENAME`: The name of the configuration file ("config.ini").
- * - `SETTINGS_PATH`: The base path for Ultrahand settings ("sdmc:/config/ultrahand/").
+ * - `SETTINGS_PATH`: The base path for Ultrahand settings ("sdmc:/config/ASAP-assist/ultrahand/").
  * - `ULTRAHAND_CONFIG_INI_PATH`: The full path to the Ultrahand settings configuration file.
  * - `PACKAGE_PATH`: The base directory for packages ("sdmc:/switch/.packages/").
  * - `OVERLAY_PATH`: The base directory for overlays ("sdmc:/switch/.overlays/").
@@ -200,10 +200,10 @@ void copyTeslaKeyComboToUltrahand() {
     std::string keyCombo = ULTRAHAND_COMBO_STR;
     std::map<std::string, std::map<std::string, std::string>> parsedData;
     
-    bool teslaConfigExists = isFileOrDirectory(TESLA_CONFIG_INI_PATH);
+    //bool teslaConfigExists = isFileOrDirectory(TESLA_CONFIG_INI_PATH);
     bool ultrahandConfigExists = isFileOrDirectory(ULTRAHAND_CONFIG_INI_PATH);
 
-    bool initializeTesla = false;
+    /*bool initializeTesla = false;
     std::string teslaKeyCombo = keyCombo;
 
     if (teslaConfigExists) {
@@ -220,7 +220,7 @@ void copyTeslaKeyComboToUltrahand() {
         }
     } else {
         initializeTesla = true;
-    }
+    }*/
     
     bool initializeUltrahand = false;
     if (ultrahandConfigExists) {
@@ -239,9 +239,9 @@ void copyTeslaKeyComboToUltrahand() {
         initializeUltrahand = true;
     }
 
-    if (initializeTesla || (teslaKeyCombo != keyCombo)) {
+    /*if (initializeTesla || (teslaKeyCombo != keyCombo)) {
         setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, keyCombo);
-    }
+    }*/
 
     if (initializeUltrahand) {
         setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR, keyCombo);
@@ -315,6 +315,10 @@ void drawTable(std::unique_ptr<tsl::elm::List>& list, const std::vector<std::str
     if (tableSectionTextColor != DEFAULT_STR) {
         if (tableSectionTextColor == "warning") {
             alternateSectionTextColor = tsl::warningTextColor;
+        } else if (tableSectionTextColor == "accent") {
+            alternateSectionTextColor = tsl::accentTextColor;
+        } else if (tableSectionTextColor == "sectioninfo") {
+            alternateSectionTextColor = tsl::sectitleTextColor;
         } else {
             alternateSectionTextColor = tsl::RGB888(tableSectionTextColor);
         }
@@ -323,6 +327,10 @@ void drawTable(std::unique_ptr<tsl::elm::List>& list, const std::vector<std::str
     if (tableInfoTextColor != DEFAULT_STR) {
         if (tableInfoTextColor == "warning") {
             alternateInfoTextColor = tsl::warningTextColor;
+        } else if (tableInfoTextColor == "accent") {
+            alternateInfoTextColor = tsl::accentTextColor;
+        } else if (tableInfoTextColor == "sectioninfo") {
+            alternateInfoTextColor = tsl::sectitleTextColor;
         } else {
             alternateInfoTextColor = tsl::RGB888(tableInfoTextColor);
         }
@@ -485,21 +493,23 @@ void addHelpInfo(std::unique_ptr<tsl::elm::List>& list) {
 
     // Define the section lines and info lines directly
     const std::vector<std::string> sectionLines = {
-        SETTINGS_MENU,
-        SCRIPT_OVERLAY,
-        STAR_FAVORITE,
-        APP_SETTINGS
+        GUIDE_EXTRA,
+        GUIDE_SYSCLK,
+        GUIDE_TOOLKIT,
+        LAUNCHER_PACKAGE,
+        GUIDE_STAR
     };
 
     const std::vector<std::string> infoLines = {
-        "\uE0B5 (" + ON_MAIN_MENU + ")",
-        "\uE0B6 (" + ON_A_COMMAND + ")",
-        "\uE0E2 (" + ON_OVERLAY_PACKAGE + ")",
-        "\uE0E3 (" + ON_OVERLAY_PACKAGE + ")"
+        GUIDE_TEXT1,
+        GUIDE_TEXT2,
+        GUIDE_TEXT3,
+        GUIDE_TEXT4,
+        "\uE0B5 · \uE0E3│\uE0E2 " + GUIDE_TEXT5
     };
 
     // Draw the table with the defined lines
-    drawTable(list, sectionLines, infoLines, xOffset, 20, 12, 3);
+    drawTable(list, sectionLines, infoLines, xOffset, 20, 12, 3, SECTITLE_STR, ACCENT_STR, LEFT_STR, true);
 }
 
 
@@ -578,6 +588,71 @@ void addPackageInfo(std::unique_ptr<tsl::elm::List>& list, auto& packageHeader, 
 
     // Drawing the table with section lines and info lines
     drawTable(list, sectionLines, infoLines, xOffset, 20, 12, 3);
+}
+
+
+void addCreditInfo(std::unique_ptr<tsl::elm::List>& list, auto& packageHeader, std::string type = OVERLAY_STR) {
+    // Add a section break with small text to indicate the "Commands" section
+    list->addItem(new tsl::elm::CategoryHeader(ULTRA_OVERLAY_INFO));
+
+    int maxLineLength = 40;  // Adjust the maximum line length as needed
+    int xOffset = 80;    // Adjust the horizontal offset as needed
+    //int numEntries = 0;   // Count of the number of entries
+
+    std::vector<std::string> sectionLines;
+    std::vector<std::string> infoLines;
+
+    // Helper function to add text with wrapping
+    auto addWrappedText = [&](const std::string& header, const std::string& text) {
+        sectionLines.push_back(header);
+        std::string::size_type aboutHeaderLength = header.length();
+        
+        size_t startPos = 0;
+        size_t spacePos = 0;
+
+        size_t endPos;
+        std::string line;
+
+        while (startPos < text.length()) {
+            endPos = std::min(startPos + maxLineLength, text.length());
+            line = text.substr(startPos, endPos - startPos);
+            
+            // Check if the current line ends with a space; if not, find the last space in the line
+            if (endPos < text.length() && text[endPos] != ' ') {
+                spacePos = line.find_last_of(' ');
+                if (spacePos != std::string::npos) {
+                    endPos = startPos + spacePos;
+                    line = text.substr(startPos, endPos - startPos);
+                }
+            }
+
+            infoLines.push_back(line);
+            startPos = endPos + 1;
+            //numEntries++;
+
+            // Add corresponding newline to the packageSectionString
+            if (startPos < text.length())
+                sectionLines.push_back(std::string(aboutHeaderLength, ' '));
+        }
+    };
+
+    // Adding package header info
+    if (!packageHeader.about.empty()) {
+        addWrappedText(ABOUT, packageHeader.about);
+    }
+
+    if (!packageHeader.creator.empty()) {
+        sectionLines.push_back(CREATOR);
+        infoLines.push_back(packageHeader.creator);
+        //numEntries++;
+    }
+
+    if (!packageHeader.credits.empty()) {
+        addWrappedText(CREDITS, packageHeader.credits);
+    }
+
+    // Drawing the table with section lines and info lines
+    drawTable(list, sectionLines, infoLines, xOffset, 20, 12, 5, SECTITLE_STR, ACCENT_STR, LEFT_STR, true);
 }
 
 
@@ -696,7 +771,36 @@ std::vector<std::pair<std::string, std::vector<std::vector<std::string>>>> loadO
     if (!configFile && makeConfig) {
         std::ofstream configFileOut(configIniPath);
         if (configFileOut) {
-            configFileOut << "[Reboot]\nreboot\n\n[Shutdown]\nshutdown\n";
+            configFileOut << "[Launcher+]\n"
+                          << "[*" + REBOOT + "]\n"
+                          << "[" + LPLUS_CFWT + "]\n"
+                          << "reboot boot '" + LPLUS_CFW + "'\n"
+                          << "[" + LPLUS_SEMISTOCKT + "]\n"
+                          << "reboot boot '" + LPLUS_SEMISTOCK + "'\n"
+                          << "[Hekate (" + LPLUS_HEKATE_HOME + ")]\n"
+                          << "reboot HEKATE\n"
+                          << "[Hekate (UMS)]\n"
+                          << "reboot UMS\n"
+                          << "[Lineage (" + LPLUS_ANDROID + ")]\n"
+                          << "reboot ini 'Lineage OS (" + LPLUS_ANDROID + ")'\n"
+                          << "[Lakka (" + LPLUS_LAKKA + ")]\n"
+                          << "reboot ini 'Lakka (" + LPLUS_LAKKA + ")'\n"
+                          << "[Ubuntu (" + LPLUS_LINUX + ")]\n"
+                          << "reboot ini 'Ubuntu (" + LPLUS_LINUX + ")'\n\n"
+                          << "[Launcher+]\n"
+                          << "[*" + SHUTDOWN + "]\n"
+                          << "[" + SECTION_INFOT + "]\n"
+                          << ";mode=table\n"
+                          << ";spacing=5\n"
+                          << ";gap=30\n"
+                          << "'" + LPLUS_NS + ":' = '" + LPLUS_NS_INFO + "'\n"
+                          << "'' = ''\n"
+                          << "'" + LPLUS_BC + ":' = '" + LPLUS_BC_INFO + "'\n"
+                          << "'MissionControl:' = '" + LPLUS_MC_INFO + "'\n\n"
+                          << "[" + LPLUS_NS + "]\n"
+                          << "shutdown\n"
+                          << "[" + LPLUS_BC + "]\n"
+                          << "shutdown controllers";
             //configFileOut << "[*Reboot]\n[HOS Reboot]\nreboot\n[Hekate Reboot]\nreboot HEKATE\n[UMS Reboot]\nreboot UMS\n\n[Commands]\n[Shutdown]\nshutdown";
             configFileOut.close();
         }
@@ -1392,7 +1496,7 @@ void processCommand(const std::vector<std::string>& cmd, const std::string& pack
             
             setIniFileKey(sourcePath.c_str(), desiredSection.c_str(), desiredKey.c_str(), desiredNewKey.c_str());
         }
-    }else if (commandName == "set-footer") {
+    } else if (commandName == "set-footer") {
         if (cmdSize >= 2) {
             std::string desiredValue = removeQuotes(cmd[1]);
             setIniFileValue((packagePath+CONFIG_FILENAME).c_str(), selectedCommand.c_str(), FOOTER_STR, desiredValue.c_str());
