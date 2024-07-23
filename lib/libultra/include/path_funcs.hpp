@@ -30,6 +30,8 @@ static std::atomic<bool> abortFileOp(false);
 size_t COPY_BUFFER_SIZE = 4096*4; // Increase buffer size to 128 KB
 
 
+
+
 /**
  * @brief Creates a single directory if it doesn't exist.
  *
@@ -52,7 +54,7 @@ inline void createSingleDirectory(const std::string& directoryPath) {
  *
  * @param directoryPath The path of the directory to be created.
  */
-void createDirectory(const std::string& directoryPath) {
+inline void createDirectory(const std::string& directoryPath) {
     std::string volume = "sdmc:/";
     std::string path = directoryPath;
 
@@ -81,6 +83,14 @@ void createDirectory(const std::string& directoryPath) {
 }
 
 
+inline void writeLog(std::ofstream& logFile, const std::string& line) {
+    if (logFile.is_open()) {
+        logFile << line << std::endl;
+    } else {
+        logMessage("Failed to write to log file.");
+    }
+}
+
 
 /**
  * @brief Creates a text file with the specified content.
@@ -90,7 +100,7 @@ void createDirectory(const std::string& directoryPath) {
  * @param filePath The path of the text file to be created.
  * @param content The content to be written to the text file.
  */
-void createTextFile(const std::string& filePath, const std::string& content) {
+inline void createTextFile(const std::string& filePath, const std::string& content) {
     std::ofstream file(filePath);
     if (file.is_open()) {
         file << content;
@@ -108,20 +118,35 @@ void createTextFile(const std::string& filePath, const std::string& content) {
  *
  * @param path The path of the file or directory to be deleted.
  */
-void deleteFileOrDirectory(const std::string& pathToDelete) {
+void deleteFileOrDirectory(const std::string& pathToDelete, const std::string& logSource = "") {
     std::vector<std::string> stack;
-    logMessage("pathToDelete: "+pathToDelete);
+    logMessage("pathToDelete: " + pathToDelete);
 
     bool pathIsFile = pathToDelete.back() != '/';
+    std::ofstream logSourceFile;
+
+    if (!logSource.empty()) {
+        createDirectory(getParentDirFromPath(logSource));
+        logSourceFile.open(logSource, std::ios::app);
+        if (!logSourceFile.is_open()) {
+            logMessage("Failed to open source log file: " + logSource);
+        }
+    }
+
     if (pathIsFile) {
         if (isFile(pathToDelete)) {
             if (remove(pathToDelete.c_str()) == 0) {
+                if (logSourceFile.is_open())
+                    writeLog(logSourceFile, pathToDelete);
                 //logMessage("File deleted: " + currentPath);
             } else {
                 logMessage("Failed to delete file: " + pathToDelete);
             }
         } else {
             //logMessage("File does not exist: " + pathToDelete);
+        }
+        if (logSourceFile.is_open()) {
+            logSourceFile.close();
         }
         return;
     }
@@ -144,6 +169,8 @@ void deleteFileOrDirectory(const std::string& pathToDelete) {
             stack.pop_back(); // Remove from stack before deletion
             if (remove(currentPath.c_str()) == 0) {
                 //logMessage("File deleted: " + currentPath);
+                if (logSourceFile.is_open())
+                    writeLog(logSourceFile, currentPath);
             } else {
                 logMessage("Failed to delete file: " + currentPath);
             }
@@ -180,7 +207,12 @@ void deleteFileOrDirectory(const std::string& pathToDelete) {
             logMessage("Unknown file type: " + currentPath);
         }
     }
+
+    if (logSourceFile.is_open()) {
+        logSourceFile.close();
+    }
 }
+
 
 
 
@@ -193,34 +225,50 @@ void deleteFileOrDirectory(const std::string& pathToDelete) {
  *
  * @param pathPattern The pattern used to match and delete files or directories.
  */
-void deleteFileOrDirectoryByPattern(const std::string& pathPattern) {
+void deleteFileOrDirectoryByPattern(const std::string& pathPattern, const std::string& logSource = "") {
     //logMessage("pathPattern: "+pathPattern);
     std::vector<std::string> fileList = getFilesListByWildcards(pathPattern);
     
     for (const auto& path : fileList) {
         logMessage("path: "+path);
-        deleteFileOrDirectory(path);
+        deleteFileOrDirectory(path, logSource);
     }
 }
 
 
-void moveDirectory(const std::string& sourcePath, const std::string& destinationPath) {
-    // Check if source directory exists
+void moveDirectory(const std::string& sourcePath, const std::string& destinationPath,
+                   const std::string& logSource = "", const std::string& logDestination = "") {
+
     struct stat sourceInfo;
     if (stat(sourcePath.c_str(), &sourceInfo) != 0) {
         logMessage("Source directory doesn't exist: " + sourcePath);
         return;
     }
 
-    // Ensure destination directory exists
     if (mkdir(destinationPath.c_str(), 0777) != 0 && errno != EEXIST) {
         logMessage("Failed to create destination directory: " + destinationPath);
         return;
     }
 
+    std::ofstream logSourceFile, logDestinationFile;
+    if (!logSource.empty()) {
+        createDirectory(getParentDirFromPath(logSource));
+        logSourceFile.open(logSource, std::ios::app);
+        if (!logSourceFile.is_open()) {
+            logMessage("Failed to open source log file: " + logSource);
+        }
+    }
+
+    if (!logDestination.empty()) {
+        createDirectory(getParentDirFromPath(logDestination));
+        logDestinationFile.open(logDestination, std::ios::app);
+        if (!logDestinationFile.is_open()) {
+            logMessage("Failed to open destination log file: " + logDestination);
+        }
+    }
+
     std::vector<std::pair<std::string, std::string>> stack;
     std::vector<std::string> directoriesToRemove;
-
     stack.push_back({sourcePath, destinationPath});
 
     while (!stack.empty()) {
@@ -240,56 +288,75 @@ void moveDirectory(const std::string& sourcePath, const std::string& destination
             name = entry->d_name;
             if (name == "." || name == "..") continue;
 
-            // Ensure no double slashes in paths
-            fullPathSrc = currentSource + (currentSource.back() == '/' ? "" : "/") + name;
-            fullPathDst = currentDestination + (currentDestination.back() == '/' ? "" : "/") + name;
+            fullPathSrc = currentSource + '/' + name;
+            fullPathDst = currentDestination + '/' + name;
 
-            if (isDirectory(fullPathSrc)) {
-                // Ensure directory paths end with '/'
-                fullPathSrc += '/';
-                fullPathDst += '/';
-
-                // Create the destination directory if it doesn't exist
+            if (entry->d_type == DT_DIR) {
                 if (mkdir(fullPathDst.c_str(), 0777) != 0 && errno != EEXIST) {
                     logMessage("Failed to create destination directory: " + fullPathDst);
                     continue;
                 }
-                // Push the directory pair to the stack
                 stack.push_back({fullPathSrc, fullPathDst});
                 directoriesToRemove.push_back(fullPathSrc);
             } else {
-                // Remove file if it exists in the destination
                 remove(fullPathDst.c_str());
-
-                // Move file
                 if (rename(fullPathSrc.c_str(), fullPathDst.c_str()) != 0) {
                     logMessage("Failed to move: " + fullPathSrc);
+                } else {
+                    if (logSourceFile.is_open())
+                        logSourceFile << fullPathSrc << std::endl;
+                    if (logDestinationFile.is_open())
+                        logDestinationFile << fullPathDst << std::endl;
                 }
             }
         }
         closedir(dir);
     }
 
-    // Delete the directories in reverse order (deepest first)
     for (auto it = directoriesToRemove.rbegin(); it != directoriesToRemove.rend(); ++it) {
         if (rmdir(it->c_str()) != 0) {
             logMessage("Failed to delete source directory: " + *it);
         }
     }
 
-    // Delete the root source directory
     if (rmdir(sourcePath.c_str()) != 0) {
         logMessage("Failed to delete source directory: " + sourcePath);
+    }
+
+    if (logSourceFile.is_open()) {
+        logSourceFile.close();
+    }
+    if (logDestinationFile.is_open()) {
+        logDestinationFile.close();
     }
 }
 
 
 
 
-void moveFile(const std::string& sourcePath, const std::string& destinationPath) {
+
+inline void moveFile(const std::string& sourcePath, const std::string& destinationPath,
+              const std::string& logSource = "", const std::string& logDestination = "") {
     if (!isFileOrDirectory(sourcePath)) {
         logMessage("Source file doesn't exist or is not a regular file: " + sourcePath);
         return;
+    }
+
+    std::ofstream logSourceFile, logDestinationFile;
+    if (!logSource.empty()) {
+        createDirectory(getParentDirFromPath(logSource));
+        logSourceFile.open(logSource, std::ios::app);
+        if (!logSourceFile.is_open()) {
+            logMessage("Failed to open source log file: " + logSource);
+        }
+    }
+
+    if (!logDestination.empty()) {
+        createDirectory(getParentDirFromPath(logDestination));
+        logDestinationFile.open(logDestination, std::ios::app);
+        if (!logDestinationFile.is_open()) {
+            logMessage("Failed to open destination log file: " + logDestination);
+        }
     }
 
     if (destinationPath.back() == '/') {
@@ -297,20 +364,40 @@ void moveFile(const std::string& sourcePath, const std::string& destinationPath)
             createDirectory(destinationPath);
         // Destination is a directory, construct full destination path
         std::string destFile = destinationPath + getFileName(sourcePath);
-        logMessage("destFile: "+destFile);
+        //logMessage("destFile: " + destFile);
         remove(destFile.c_str());
         if (rename(sourcePath.c_str(), destFile.c_str()) != 0) {
             logMessage("Failed to move file to directory: " + sourcePath);
+        } else {
+            if (logSourceFile.is_open())
+                writeLog(logSourceFile, sourcePath);
+            if (logDestinationFile.is_open())
+                writeLog(logDestinationFile, destFile);
         }
     } else {
         // Destination is a file path, directly rename the file
-        logMessage("Removing "+destinationPath);
+        //logMessage("Removing " + destinationPath);
         remove(destinationPath.c_str());
+        createDirectory(getParentDirFromPath(destinationPath));
         if (rename(sourcePath.c_str(), destinationPath.c_str()) != 0) {
-            logMessage("Failed to move file: " + sourcePath);
+            logMessage("Failed to move file: " + sourcePath + " -> " + destinationPath);
+            logMessage("Error: " + std::string(strerror(errno)));
+        } else {
+            if (logSourceFile.is_open())
+                writeLog(logSourceFile, sourcePath);
+            if (logDestinationFile.is_open())
+                writeLog(logDestinationFile, destinationPath);
         }
     }
+
+    if (logSourceFile.is_open()) {
+        logSourceFile.close();
+    }
+    if (logDestinationFile.is_open()) {
+        logDestinationFile.close();
+    }
 }
+
 
 
 
@@ -323,11 +410,12 @@ void moveFile(const std::string& sourcePath, const std::string& destinationPath)
  * @param sourcePath The path of the source file or directory.
  * @param destinationPath The path of the destination where the file or directory will be moved.
  */
-void moveFileOrDirectory(const std::string& sourcePath, const std::string& destinationPath) {
+void moveFileOrDirectory(const std::string& sourcePath, const std::string& destinationPath,
+    const std::string& logSource = "", const std::string& logDestination = "") {
     if (sourcePath.back() == '/' && destinationPath.back() == '/') {
-        moveDirectory(sourcePath, destinationPath);
+        moveDirectory(sourcePath, destinationPath, logSource, logDestination);
     } else {
-        moveFile(sourcePath, destinationPath);
+        moveFile(sourcePath, destinationPath, logSource, logDestination);
     }
 }
 
@@ -342,7 +430,9 @@ void moveFileOrDirectory(const std::string& sourcePath, const std::string& desti
  * @param sourcePathPattern The pattern used to match files or directories to be moved.
  * @param destinationPath The destination directory where matching files or directories will be moved.
  */
-void moveFilesOrDirectoriesByPattern(const std::string& sourcePathPattern, const std::string& destinationPath) {
+void moveFilesOrDirectoriesByPattern(const std::string& sourcePathPattern, const std::string& destinationPath,
+    const std::string& logSource = "", const std::string& logDestination = "") {
+
     std::vector<std::string> fileList = getFilesListByWildcards(sourcePathPattern);
     
     //std::string fileListAsString;
@@ -384,15 +474,33 @@ static std::atomic<int> copyPercentage(-1);
  * @param fromFile The path of the source file to be copied.
  * @param toFile The path of the destination where the file will be copied.
  */
-void copySingleFile(const std::string& fromFile, const std::string& toFile, long long& totalBytesCopied, const long long totalSize) {
+inline void copySingleFile(const std::string& fromFile, const std::string& toFile, long long& totalBytesCopied, const long long totalSize,
+                    const std::string& logSource = "", const std::string& logDestination = "") {
     std::ifstream srcFile(fromFile, std::ios::binary);
     std::ofstream destFile(toFile, std::ios::binary);
-    //const size_t COPY_BUFFER_SIZE = 4096;
+    const size_t COPY_BUFFER_SIZE = 4096;
     char buffer[COPY_BUFFER_SIZE];
     
     if (!srcFile || !destFile) {
         logMessage("Error opening files for copying.");
         return;
+    }
+
+    std::ofstream logSourceFile, logDestinationFile;
+    if (!logSource.empty()) {
+        createDirectory(getParentDirFromPath(logSource));
+        logSourceFile.open(logSource, std::ios::app);
+        if (!logSourceFile.is_open()) {
+            logMessage("Failed to open source log file: " + logSource);
+        }
+    }
+
+    if (!logDestination.empty()) {
+        createDirectory(getParentDirFromPath(logDestination));
+        logDestinationFile.open(logDestination, std::ios::app);
+        if (!logDestinationFile.is_open()) {
+            logMessage("Failed to open destination log file: " + logDestination);
+        }
     }
 
     while (srcFile.read(buffer, COPY_BUFFER_SIZE)) {
@@ -414,7 +522,22 @@ void copySingleFile(const std::string& fromFile, const std::string& toFile, long
         totalBytesCopied += srcFile.gcount();
         copyPercentage.store(static_cast<int>(100 * totalBytesCopied / totalSize), std::memory_order_release);
     }
+
+    if (logSourceFile.is_open()) {
+        writeLog(logSourceFile, fromFile);
+    }
+    if (logDestinationFile.is_open()) {
+        writeLog(logDestinationFile, toFile);
+    }
+
+    if (logSourceFile.is_open()) {
+        logSourceFile.close();
+    }
+    if (logDestinationFile.is_open()) {
+        logDestinationFile.close();
+    }
 }
+
 
 
 /**
@@ -422,7 +545,7 @@ void copySingleFile(const std::string& fromFile, const std::string& toFile, long
  * @param path The path to the file or directory.
  * @return The total size in bytes of all files within the directory or the size of a file.
  */
-long long getTotalSize(const std::string& path) {
+inline long long getTotalSize(const std::string& path) {
     struct stat statbuf;
     if (lstat(path.c_str(), &statbuf) != 0) {
         return 0; // Cannot stat file
@@ -484,7 +607,8 @@ long long getTotalSize(const std::string& path) {
  * @param fromPath The path of the source file or directory to be copied.
  * @param toPath The path of the destination where the file or directory will be copied.
  */
-void copyFileOrDirectory(const std::string& fromPath, const std::string& toPath, long long* totalBytesCopied = nullptr, long long totalSize = 0) {
+void copyFileOrDirectory(const std::string& fromPath, const std::string& toPath, long long* totalBytesCopied = nullptr, long long totalSize = 0,
+    const std::string& logSource = "", const std::string& logDestination = "") {
     bool isTopLevelCall = totalBytesCopied == nullptr;
     long long tempBytesCopied;
 
@@ -530,7 +654,7 @@ void copyFileOrDirectory(const std::string& fromPath, const std::string& toPath,
             toFilePath = getParentDirFromPath(currentToPath) + "/" + filename;
             createDirectory(getParentDirFromPath(toFilePath)); // Ensure the parent directory exists
             tempBytesCopied = totalBytesCopied ? *totalBytesCopied : 0;
-            copySingleFile(currentFromPath, toFilePath, tempBytesCopied, totalSize);
+            copySingleFile(currentFromPath, toFilePath, tempBytesCopied, totalSize, logSource, logDestination);
 
             if (totalBytesCopied) {
                 *totalBytesCopied = tempBytesCopied; // Update total bytes copied
@@ -574,7 +698,8 @@ void copyFileOrDirectory(const std::string& fromPath, const std::string& toPath,
  * @param sourcePathPattern The pattern used to match files or directories to be copied.
  * @param toDirectory The destination directory where matching files or directories will be copied.
  */
-void copyFileOrDirectoryByPattern(const std::string& sourcePathPattern, const std::string& toDirectory) {
+void copyFileOrDirectoryByPattern(const std::string& sourcePathPattern, const std::string& toDirectory,
+    const std::string& logSource = "", const std::string& logDestination = "") {
     std::vector<std::string> fileList = getFilesListByWildcards(sourcePathPattern);
     long long totalSize = 0;
     for (const std::string& path : fileList) {
@@ -583,7 +708,7 @@ void copyFileOrDirectoryByPattern(const std::string& sourcePathPattern, const st
 
     long long totalBytesCopied = 0;
     for (const std::string& sourcePath : fileList) {
-        copyFileOrDirectory(sourcePath, toDirectory, &totalBytesCopied, totalSize);
+        copyFileOrDirectory(sourcePath, toDirectory, &totalBytesCopied, totalSize, logSource, logDestination);
     }
     copyPercentage.store(-1, std::memory_order_release);  // Reset after operation
 }
