@@ -599,11 +599,11 @@ private:
                     downloadFile(LATEST_RELEASE_INFO_URL, SETTINGS_PATH);
                     downloadPercentage.store(-1, std::memory_order_release);
                 } else if (targetMenu == "themeMenu") {
-                    if (!isFileOrDirectory(THEMES_PATH+"WHITE%20-%20Basic%20Black.ini")) {
+                    if (!isFileOrDirectory(THEMES_PATH+"WHITE-BasicBlack.ini")) {
                         //executeCommands({
                         //    {"download", INCLUDED_THEME_FOLDER_URL+"ultra.ini", THEMES_PATH}
                         //});
-                        downloadFile(INCLUDED_THEME_FOLDER_URL+"WHITE%20-%20Basic%20Black.ini", THEMES_PATH);
+                        downloadFile(INCLUDED_THEME_FOLDER_URL+"WHITE-BasicBlack.ini", THEMES_PATH);
                         downloadPercentage.store(-1, std::memory_order_release);
                     }
                 }
