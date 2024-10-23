@@ -1,0 +1,4 @@
+[submodule "lib/libultrahand"]
+	path = lib/libultrahand
+	url = https://github.com/Yorunokyujitsu/libultrahand
+	branch = test
