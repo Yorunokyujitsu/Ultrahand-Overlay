@@ -811,10 +811,10 @@ void copyTeslaKeyComboToUltrahand() {
     std::string keyCombo = ULTRAHAND_COMBO_STR;
     std::map<std::string, std::map<std::string, std::string>> parsedData;
     
-    bool teslaConfigExists = isFileOrDirectory(TESLA_CONFIG_INI_PATH);
+    /* bool teslaConfigExists = isFileOrDirectory(TESLA_CONFIG_INI_PATH); */
     bool ultrahandConfigExists = isFileOrDirectory(ULTRAHAND_CONFIG_INI_PATH);
 
-    bool initializeTesla = false;
+    /* bool initializeTesla = false;
     std::string teslaKeyCombo = keyCombo;
 
     if (teslaConfigExists) {
@@ -831,7 +831,7 @@ void copyTeslaKeyComboToUltrahand() {
         }
     } else {
         initializeTesla = true;
-    }
+    } */
     
     bool initializeUltrahand = false;
     if (ultrahandConfigExists) {
@@ -850,9 +850,9 @@ void copyTeslaKeyComboToUltrahand() {
         initializeUltrahand = true;
     }
 
-    if (initializeTesla || (teslaKeyCombo != keyCombo)) {
+    /* if (initializeTesla || (teslaKeyCombo != keyCombo)) {
         setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, keyCombo);
-    }
+    } */
 
     if (initializeUltrahand) {
         setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR, keyCombo);
@@ -1310,6 +1310,8 @@ void drawTable(
         if (c=="header")     return tsl::headerTextColor;
         if (c=="info")       return tsl::infoTextColor;
         if (c=="section")    return tsl::sectionTextColor;
+        if (c=="accent") return tsl::accentTextColor;
+        if (c=="sectioninfo") return tsl::sectitleTextColor;
         if (c=="healthy_ram")return tsl::healthyRamTextColor;
         if (c=="neutral_ram")return tsl::neutralRamTextColor;
         if (c=="bad_ram")    return tsl::badRamTextColor;
@@ -1444,23 +1446,27 @@ void addHelpInfo(std::unique_ptr<tsl::elm::List>& list) {
 
     // Define the section lines and info lines directly
     std::vector<std::string> sectionLines = {
-        SETTINGS_MENU,
-        SCRIPT_OVERLAY,
-        STAR_FAVORITE,
-        APP_SETTINGS
+        EXST_USG,
+        SCLK_USG,
+        OCTK_USG,
+        HELP_USG,
+        VOLP_USG,
+        LPLS_USG
     };
 
     std::vector<std::string> infoLines = {
-        "\uE0B5 (" + ON_MAIN_MENU + ")",
-        "\uE0B6 (" + ON_A_COMMAND + ")",
-        "\uE0E2 (" + ON_OVERLAY_PACKAGE + ")",
-        "\uE0E3 (" + ON_OVERLAY_PACKAGE + ")"
+       USG_TXT1,
+       USG_TXT2,
+       USG_TXT3,
+       USG_TXT4,
+       USG_TXT5,
+       USG_TXT6
     };
 
     std::vector<std::vector<std::string>> dummyTableData;
 
     // Draw the table with the defined lines
-    drawTable(list, dummyTableData, sectionLines, infoLines, xOffset, 19, 12, 4);
+    drawTable(list, dummyTableData, sectionLines, infoLines, xOffset, 20, 12, 3, SECTITLE_STR, ACCENT_STR, DEFAULT_STR, LEFT_STR, true);
     //drawTable(list, sectionLines, infoLines, xOffset, 19, 12, 4, DEFAULT_STR, DEFAULT_STR, LEFT_STR, false, false, true, "none", false);
 }
 
@@ -1544,6 +1550,70 @@ void addPackageInfo(std::unique_ptr<tsl::elm::List>& list, auto& packageHeader, 
     // Drawing the table with section lines and info lines
     //drawTable(list, sectionLines, infoLines, xOffset, 20, 12, 3);
     drawTable(list, dummyTableData, sectionLines, infoLines, xOffset, 19, 12, 3, DEFAULT_STR, DEFAULT_STR, DEFAULT_STR, LEFT_STR, false, false, true);
+}
+
+void addCreditInfo(std::unique_ptr<tsl::elm::List>& list, auto& packageHeader, std::string type = OVERLAY_STR) {
+    // Add a section break with small text to indicate the "Commands" section
+    list->addItem(new tsl::elm::CategoryHeader(UTH_INFO));
+
+    int maxLineLength = 40;  // Adjust the maximum line length as needed
+    int xOffset = 80;    // Adjust the horizontal offset as needed
+    //int numEntries = 0;   // Count of the number of entries
+
+    std::vector<std::string> sectionLines;
+    std::vector<std::string> infoLines;
+
+    // Helper function to add text with wrapping
+    auto addWrappedText = [&](const std::string& header, const std::string& text) {
+        sectionLines.push_back(header);
+        std::string::size_type aboutHeaderLength = header.length();
+        
+        size_t startPos = 0;
+        size_t spacePos = 0;
+
+        size_t endPos;
+        std::string line;
+
+        while (startPos < text.length()) {
+            endPos = std::min(startPos + maxLineLength, text.length());
+            line = text.substr(startPos, endPos - startPos);
+            
+            // Check if the current line ends with a space; if not, find the last space in the line
+            if (endPos < text.length() && text[endPos] != ' ') {
+                spacePos = line.find_last_of(' ');
+                if (spacePos != std::string::npos) {
+                    endPos = startPos + spacePos;
+                    line = text.substr(startPos, endPos - startPos);
+                }
+            }
+
+            infoLines.push_back(line);
+            startPos = endPos + 1;
+            //numEntries++;
+
+            // Add corresponding newline to the packageSectionString
+            if (startPos < text.length())
+                sectionLines.push_back(std::string(aboutHeaderLength, ' '));
+        }
+    };
+
+    // Adding package header info
+    if (!packageHeader.about.empty()) {
+        addWrappedText(_ABOUT, packageHeader.about);
+    }
+
+    if (!packageHeader.creator.empty()) {
+        addWrappedText(_CREATOR, packageHeader.creator);
+    }
+
+    if (!packageHeader.credits.empty()) {
+        addWrappedText(_CREDITS, packageHeader.credits);
+    }
+
+    std::vector<std::vector<std::string>> dummyTableData;
+
+    // Drawing the table with section lines and info lines
+    drawTable(list, dummyTableData, sectionLines, infoLines, xOffset, 20, 12, 5, SECTITLE_STR, ACCENT_STR, DEFAULT_STR, LEFT_STR, true);
 }
 
 

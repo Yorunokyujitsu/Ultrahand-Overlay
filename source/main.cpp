@@ -112,7 +112,7 @@ static std::string lastPageHeader;
 static std::string lastMenu = "";
 static std::string lastMenuMode = "";
 static std::string lastKeyName = "";
-static bool hideUserGuide = false;
+static bool hideUserGuide = true;
 
 static std::string lastCommandMode;
 
@@ -258,22 +258,14 @@ private:
                     //executeCommands({
                     //    {"download", LATEST_RELEASE_INFO_URL, SETTINGS_PATH}
                     //});
-                    deleteFileOrDirectory(SETTINGS_PATH+"RELEASE.ini");
-                    downloadFile(LATEST_RELEASE_INFO_URL, SETTINGS_PATH);
+                    downloadFile(LATEST_RELEASE_INFO_URL, SETTINGS_PATH+"RELEASE.ini");
                     downloadPercentage.store(-1, std::memory_order_release);
                 } else if (targetMenu == "themeMenu") {
-                    if (!isFileOrDirectory(THEMES_PATH+"ultra.ini")) {
+                    if (!isFileOrDirectory(THEMES_PATH+"WHITE-BasicBlack.ini")) {
                         //executeCommands({
                         //    {"download", INCLUDED_THEME_FOLDER_URL+"ultra.ini", THEMES_PATH}
                         //});
-                        downloadFile(INCLUDED_THEME_FOLDER_URL+"ultra.ini", THEMES_PATH);
-                        downloadPercentage.store(-1, std::memory_order_release);
-                    }
-                    if (!isFileOrDirectory(THEMES_PATH+"classic.ini")) {
-                        //executeCommands({
-                        //    {"download", INCLUDED_THEME_FOLDER_URL+"classic.ini", THEMES_PATH}
-                        //});
-                        downloadFile(INCLUDED_THEME_FOLDER_URL+"classic.ini", THEMES_PATH);
+                        downloadFile(INCLUDED_THEME_FOLDER_URL+"WHITE-BasicBlack.ini", THEMES_PATH);
                         downloadPercentage.store(-1, std::memory_order_release);
                     }
                 }
@@ -318,7 +310,7 @@ private:
                 
                         if (targetMenu == "keyComboMenu") {
                             // Also set it in tesla config
-                            setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, iniKey, item);
+                            //setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, iniKey, item);
                 
                             // Remove this key combo from any overlays using it
                             const auto overlaySections =  ult::parseSectionsFromIni(OVERLAYS_INI_FILEPATH);
@@ -386,19 +378,43 @@ private:
                         loaderPlusUrl = OLD_NX_OVLLOADER_PLUS_ZIP_URL;
                     }
 
+                	interpreterCommands = {
+                	    {"try:"},
+                        {"delete", ATMO_PATH + "contents/420000000000000B/"},
+                	    {"delete", ATMO_PATH + "contents/010000000000bd00/"},
+                        {"delete", ATMO_PATH + "contents/690000000000000D/"},
+                	    {"delete", ATMO_PATH + "exefs_patches/bluetooth_patches/"},
+                	    {"delete", ATMO_PATH + "exefs_patches/btm_patches/"},
+                	    {"delete", ATMO_PATH + "kips/loader.kip"},
+                        {"delete", CONFIG_PATH + "ASAP-assist/Controller/"},
+                        {"delete", CONFIG_PATH + "ASAP-assist/Packages/"},
+                        {"delete", CONFIG_PATH + "ASAP-assist/OC/"},
+                        {"delete", CONFIG_PATH + "ASAP-assist/Homebrews/sys-clk-manager/"},
+                        {"delete", SWITCH_PATH + ".overlays/.offload/emuiibo.ovl"},
+                        {"delete", SWITCH_PATH + ".overlays/.offload/FPSLocker.ovl"},
+                        {"delete", SWITCH_PATH + ".overlays/.offload/ovlEdiZon.ovl"},
+                        {"delete", SWITCH_PATH + ".overlays/.offload/ovlSysmodules.ovl"},
+                        {"delete", SWITCH_PATH + ".overlays/.offload/ReverseNX-RT-ovl.ovl"},
+                        {"delete", SWITCH_PATH + ".overlays/.offload/Status-Monitor-Overlay.ovl"},
+                        {"delete", SWITCH_PATH + ".overlays/.offload/sys-clk-overlay.ovl"},
+                        {"delete", SWITCH_PATH + ".overlays/Status-Monitor-Overlay_NOC.ovl"},
+                        {"delete", SWITCH_PATH + "JKSV/"},
+                        {"delete", SWITCH_PATH + "Linkalho/"},
+                        {"delete", SWITCH_PATH + "sys-con/"},
+                        {"download", downloadUrl, DOWNLOADS_PATH},
+                        {"unzip", targetPath, movePath},
+                        {"move", CONFIG_PATH + "MissionControl/", CONFIG_PATH + "ASAP-assist/Controller/MissionControl/"},
+                        {"move", CONFIG_PATH + "sys-con/", CONFIG_PATH + "ASAP-assist/Controller/sys-con/"},
+                        {"delete", DOWNLOADS_PATH},
+                        {"reboot", "boot", LPLS_CFW}
+                    };
+                } else if (title == UPT_ASAP) {
                     interpreterCommands = {
                         {"try:"},
-                        //{"delete", THEMES_PATH+"ultra.ini"},
-                        //{"delete", THEMES_PATH+"classic.ini"},
-                        //{"delete", EXPANSION_PATH + "nx-ovlloader.zip"},
-                        //{"delete", EXPANSION_PATH + "nx-ovlloader+.zip"},
-                        {"delete", targetPath},
-                        {"download", INCLUDED_THEME_FOLDER_URL+"ultra.ini", THEMES_PATH},
-                        {"download", INCLUDED_THEME_FOLDER_URL+"ultra-blue.ini", THEMES_PATH},
-                        {"download", loaderUrl, EXPANSION_PATH},
-                        {"download", loaderPlusUrl, EXPANSION_PATH},
-                        {"download", downloadUrl, DOWNLOADS_PATH}
-                        //"delete", THEME_CONFIG_INI_PATH}
+                        {"download", downloadUrl, DOWNLOADS_PATH},
+                        {"unzip", targetPath, movePath},
+                        {"delete", DOWNLOADS_PATH},
+                        {"reboot", "boot", LPLS_CFW}
                     };
                 } else {
                     interpreterCommands = {
@@ -471,6 +487,7 @@ private:
                         {"del", EXPANSION_PATH + (state ? "nx-ovlloader+/" : "nx-ovlloader/")},
                         {"unzip", EXPANSION_PATH + (state ? "nx-ovlloader+.zip" : "nx-ovlloader.zip"),
                          EXPANSION_PATH + (state ? "nx-ovlloader+/" : "nx-ovlloader/")},
+                        {"del", EXPANSION_PATH + (state ? "nx-ovlloader+/atmosphere/contents/420000000007E51A/toolbox.json" : "nx-ovlloader/atmosphere/contents/420000000007E51A/toolbox.json")},
                         {"mv", EXPANSION_PATH + (state ? "nx-ovlloader+/" : "nx-ovlloader/"), "/"}
                     });
                 }
@@ -501,27 +518,30 @@ public:
         inSettingsMenu = dropdownSelection.empty();
         inSubSettingsMenu = !dropdownSelection.empty();
         
-        const std::vector<std::string> defaultLanguagesRepresentation = {ENGLISH, SPANISH, FRENCH, GERMAN, JAPANESE, KOREAN, ITALIAN, DUTCH, PORTUGUESE, RUSSIAN, POLISH, SIMPLIFIED_CHINESE, TRADITIONAL_CHINESE};
-        static const std::vector<std::string> defaultLanguages = {"en", "es", "fr", "de", "ja", "ko", "it", "nl", "pt", "ru", "pl", "zh-cn", "zh-tw"};
-        //static const std::vector<std::string> defaultCombos = {"ZL+ZR+DDOWN", "ZL+ZR+DRIGHT", "ZL+ZR+DUP", "ZL+ZR+DLEFT", "L+R+DDOWN", "L+R+DRIGHT", "L+R+DUP", "L+R+DLEFT", "L+DDOWN", "R+DDOWN", "ZL+ZR+PLUS", "L+R+PLUS", "ZL+PLUS", "ZR+PLUS", "MINUS+PLUS", "LS+RS", "L+DDOWN+RS"};
+        const std::vector<std::string> defaultLanguagesRepresentation = {KOREAN, ENGLISH, SPANISH, FRENCH, GERMAN, JAPANESE, ITALIAN, DUTCH, PORTUGUESE, RUSSIAN, POLISH, SIMPLIFIED_CHINESE, TRADITIONAL_CHINESE};
+        static const std::vector<std::string> defaultLanguages = {"ko", "en", "es", "fr", "de", "ja", "it", "nl", "pt", "ru", "pl", "zh-cn", "zh-tw"};
+        static const std::vector<std::string> defaultCombos = {"L+DDOWN+RS", "ZL+ZR+DDOWN", "ZL+ZR+DRIGHT", "ZL+ZR+DUP", "ZL+ZR+DLEFT", "L+R+DDOWN", "L+R+DRIGHT", "L+R+DUP", "L+R+DLEFT", "L+DDOWN", "R+DDOWN", "ZL+ZR+PLUS", "L+R+PLUS", "ZL+PLUS", "ZR+PLUS", "MINUS+PLUS", "LS+RS"};
         
         auto list = std::make_unique<tsl::elm::List>();
         
         if (dropdownSelection.empty()) {
-            addHeader(list, MAIN_SETTINGS);
-            std::string defaultLang = parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, DEFAULT_LANG_STR);
+            addHeader(list, ON_MAIN_MENU);
+            
+            std::vector<std::vector<std::string>> menu_section1 = {
+                { SEC_IFTX, "", SEC_TXT1 }
+            };
+
+            addTable(list, menu_section1, "", 30, 20, 30, 3, SECTITLE_STR, whiteColor, DEFAULT_STR, DEFAULT_STR, false);
+ 
             std::string keyCombo = parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR);
             trim(keyCombo);
-            defaultLang = defaultLang.empty() ? "en" : defaultLang;
             keyCombo = keyCombo.empty() ? defaultCombos[0] : keyCombo;
-
             convertComboToUnicode(keyCombo);
+            
             addListItem(list, KEY_COMBO, keyCombo, "keyComboMenu");
-            addListItem(list, LANGUAGE, defaultLang, "languageMenu");
             addListItem(list, SYSTEM, DROPDOWN_SYMBOL, "systemMenu");
-            addListItem(list, SOFTWARE_UPDATE, DROPDOWN_SYMBOL, "softwareUpdateMenu");
 
-            addHeader(list, UI_SETTINGS);
+            /* addHeader(list, UI_SETTINGS);
 
             std::string currentTheme = parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "current_theme");
             currentTheme = (currentTheme.empty() || currentTheme == DEFAULT_STR) ? DEFAULT : currentTheme;
@@ -534,7 +554,17 @@ public:
             }
 
             addListItem(list, WIDGET, DROPDOWN_SYMBOL, "widgetMenu");
-            addListItem(list, MISCELLANEOUS, DROPDOWN_SYMBOL, "miscMenu");
+            addListItem(list, MISCELLANEOUS, DROPDOWN_SYMBOL, "miscMenu");*/
+
+            addListItem(list, UI_SETTINGS, DROPDOWN_SYMBOL, "miscMenu");
+            addListItem(list, UPT_MENU, DROPDOWN_SYMBOL, "softwareUpdateMenu");
+
+            PackageHeader overlayHeader;
+            overlayHeader.about = UPT_NTC1;
+            overlayHeader.creator = "ppkantorski, forked by Asa";
+            overlayHeader.credits = "B3711, ComplexNarrative, meha, Faker_dev, MasaGratoR, WerWolv, HookedBehemoth, many others";
+            addCreditInfo(list, overlayHeader, OVERLAY_STR);
+            overlayHeader.clear();
 
         } else if (dropdownSelection == "keyComboMenu") {
             addHeader(list, KEY_COMBO);
@@ -550,7 +580,7 @@ public:
 
             for (const auto& defaultLangMode : defaultLanguages) {
                 langFile = LANG_PATH + defaultLangMode + ".json";
-                if (defaultLangMode != "en" && !isFileOrDirectory(langFile))  {index++; continue;}
+                if (defaultLangMode != "ko" && !isFileOrDirectory(langFile))  {index++; continue;}
                 listItem = std::make_unique<tsl::elm::ListItem>(defaultLanguagesRepresentation[index]);
                 listItem->setValue(defaultLangMode);
                 if (defaultLangMode == defaulLang) {
@@ -569,7 +599,7 @@ public:
                         setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, DEFAULT_LANG_STR, defaultLangMode);
                         reloadMenu = reloadMenu2 = true;
                         parseLanguage(langFile);
-                        if (skipLang && defaultLangMode == "en") reinitializeLangVars();
+                        if (skipLang && defaultLangMode == "ko") reinitializeLangVars();
                         lastSelectedListItem->setValue(lastSelectedListItemFooter);
                         selectedListItem->setValue(defaultLangMode);
                         listItemRaw->setValue(CHECKMARK_SYMBOL);
@@ -587,26 +617,66 @@ public:
             }
             listItem.release();
         } else if (dropdownSelection == "softwareUpdateMenu") {
-            std::string versionLabel = cleanVersionLabel(parseValueFromIniSection((SETTINGS_PATH+"RELEASE.ini"), "Release Info", "latest_version"));
+            std::string versionLabel = cleanVersionLabel(parseValueFromIniSection((SETTINGS_PATH+"RELEASE.ini"), "latest_version", "ultrahand_version"));
+            std::string testerLabel = cleanVersionLabel(parseValueFromIniSection((SETTINGS_PATH+"RELEASE.ini"), "latest_version", "tester_version"));
 
-            addHeader(list, SOFTWARE_UPDATE);
-            addUpdateButton(list, UPDATE_ULTRAHAND, ULTRAHAND_REPO_URL + "releases/latest/download/ovlmenu.ovl", "/config/ultrahand/downloads/ovlmenu.ovl", "/switch/.overlays/ovlmenu.ovl", versionLabel);
-            addUpdateButton(list, UPDATE_LANGUAGES, ULTRAHAND_REPO_URL + "releases/latest/download/lang.zip", "/config/ultrahand/downloads/lang.zip", LANG_PATH, versionLabel);
+            addHeader(list, SEC_HDR1);
 
-            PackageHeader overlayHeader;
+            std::vector<std::vector<std::string>> update_section1 = {
+                { SEC_IFTX, "", UPT_TXT1 },
+                { SEC_NULL, "", SEC_NULL }
+            };
+
+            std::vector<std::vector<std::string>> update_section2 = {
+                { SEC_NULL, "", UPT_NTC2 },
+                { SEC_NULL, "", UPT_NTC3 },
+                { SEC_NULL, "", UPT_NTC4 },
+                { SEC_NULL, "", UPT_NTC5 },
+                { SEC_NULL, "", UPT_NTC6 },
+                { SEC_NULL, "", UPT_NTC7 }
+            };
+
+            addTable(list, update_section1, "", 40, 20, 0, 0, SECTITLE_STR, whiteColor, DEFAULT_STR, DEFAULT_STR, false);
+            addTable(list, update_section2, "", 9, 20, 30, 5, SECTITLE_STR, ACCENT_STR, DEFAULT_STR, CENTER_STR, false);
+            
+            addUpdateButton(list, UPDATE_ULTRAHAND, ULTRAHAND_REPO_URL + "releases/download/Nightly/Ultrahand+.zip", "/config/ultrahand/downloads/Ultrahand+.zip", ROOT_PATH, versionLabel);
+            
+            addHeader(list, SEC_HDR2);
+            
+            std::vector<std::vector<std::string>> update_section3 = {
+                { SEC_WNTX, "", UPT_TXT3 },
+                { SEC_NULL, "", SEC_LINE }
+            };
+
+            std::vector<std::vector<std::string>> update_section4 = {
+                { SEC_IFTX, "", UPT_TXT2 },
+                { SEC_NULL, "", SEC_NULL }
+            };
+
+            std::vector<std::vector<std::string>> update_section5 = {
+                { SEC_NULL, "", UPT_NTC8 }
+            };
+
+            addTable(list, update_section3, "", 30, 20, 0, 3, WARNING_STR, WARNING_STR, DEFAULT_STR, DEFAULT_STR, false);
+            addTable(list, update_section4, "", 45, 20, 0, 0, SECTITLE_STR, whiteColor, DEFAULT_STR, DEFAULT_STR, false);
+            addTable(list, update_section5, "", 9, 20, 30, 0, SECTITLE_STR, ACCENT_STR, DEFAULT_STR, CENTER_STR, false);
+            
+            addUpdateButton(list, UPT_ASAP, ULTRAHAND_REPO_URL + "releases/download/Nightly/ASAP-Tester.zip", "/config/ultrahand/downloads/ASAP-Tester.zip", ROOT_PATH, testerLabel);
+
+            /* PackageHeader overlayHeader;
             overlayHeader.title = "Ultrahand Overlay";
             overlayHeader.version = APP_VERSION;
             overlayHeader.creator = "ppkantorski";
             overlayHeader.about = "Ultrahand Overlay is a versatile tool that enables you to create and share custom command-based packages.";
             overlayHeader.credits = "Special thanks to B3711, ComplexNarrative, Faker_dev, MasaGratoR, meha, WerWolv, HookedBehemoth and many others. ♥";
             addPackageInfo(list, overlayHeader, OVERLAY_STR);
-            overlayHeader.clear();
+            overlayHeader.clear(); */
 
         } else if (dropdownSelection == "systemMenu") {
             
             // Version info formatting with a reduced buffer
             char versionString[32];  // Reduced buffer size to 32
-            snprintf(versionString, sizeof(versionString), "HOS %s│AMS %s", 
+            snprintf(versionString, sizeof(versionString), "HOS %s│Atmosphère %s", 
                      hosVersion, amsVersion);
             
             std::string hekateVersion = extractVersionFromBinary("sdmc:/bootloader/update.bin");
@@ -618,22 +688,22 @@ public:
             
             const char* modelRev;
             switch (model) {
-                case SetSysProductModel_Iowa: modelRev = "Iowa│Tegra X1+ (Mariko)"; break;
-                case SetSysProductModel_Hoag: modelRev = "Hoag│Tegra X1+ (Mariko)"; break;
-                case SetSysProductModel_Calcio: modelRev = "Calcio│Tegra X1+ (Mariko)"; break;
-                case SetSysProductModel_Aula: modelRev = "Aula│Tegra X1+ (Mariko)"; break;
-                case SetSysProductModel_Nx: modelRev = "Icosa│Tegra X1 (Erista)"; break;
-                case SetSysProductModel_Copper: modelRev = "Copper│Tegra X1 (Erista)"; break;
+                case SetSysProductModel_Iowa: modelRev = "Tegra X1+ (M)│Iowa (개선판)"; break;
+                case SetSysProductModel_Hoag: modelRev = "Tegra X1+ (M)│Hoag (Lite)"; break;
+                case SetSysProductModel_Calcio: modelRev = "Tegra X1+ (M)│Calcio (비매품)"; break;
+                case SetSysProductModel_Aula: modelRev = "Tegra X1+ (M)│Aula (OLED)"; break;
+                case SetSysProductModel_Nx: modelRev = "Tegra X1 (E)│Icosa (구형)"; break;
+                case SetSysProductModel_Copper: modelRev = "Tegra X1 (E)│Copper (비매품)"; break;
                 default: modelRev = UNAVAILABLE_SELECTION.c_str(); break;
             }
             ASSERT_FATAL(nifmInitialize(NifmServiceType_User)); // for local IP
             std::vector<std::vector<std::string>> tableData = {
                 {FIRMWARE, "", versionString},
-                {BOOTLOADER, "", hekateVersion.empty() ? "fusee" : "hekate " + hekateVersion},
+                {BOOTLOADER, "", hekateVersion.empty() ? "Fusee" : "Hekate " + hekateVersion},
                 {LOCAL_IP, "", getLocalIpAddress()}
             };
             nifmExit();
-            addTable(list, tableData, "", 163, 20, 28, 4);
+            addTable(list, tableData, "", 163, 20, 28, 4, DEFAULT_STR, ACCENT_STR, DEFAULT_STR);
             
             // Hardware and storage info
             tableData = {
@@ -641,15 +711,15 @@ public:
                 {MEMORY, "", memorySize},
                 {"└ " + VENDOR, "", memoryVendor},
                 {"└ " + MODEL, "", memoryModel},
-                {STORAGE, "", usingEmunand ? "emuMMC" : "sysMMC"},
-                {"└ eMMC ", "", getStorageInfo("emmc")},
+                {STORAGE, "", usingEmunand ? "emuMMC" : "eMMC"},
+                {"└ NAND ", "", getStorageInfo("emmc")},
                 {"└ SD Card", "", getStorageInfo("sdmc")}
             };
-            addTable(list, tableData, "", 163, 20, 30, 4);
+            addTable(list, tableData, "", 163, 20, 30, 4, DEFAULT_STR, ACCENT_STR, DEFAULT_STR);
             
             // CPU, GPU, and SOC info
             tableData = {
-                {"", "", "CPU      GPU      SOC"}
+                {"", "", "CPU      GPU      SoC"}
             };
             addTable(list, tableData, "", 163, 8, 3, 0, DEFAULT_STR, "section", "section", RIGHT_STR, true);
             
@@ -669,10 +739,10 @@ public:
                 tableData[0] = {"Speedo", "", "⋯    │    ⋯   │    ⋯  "};
                 tableData[1] = {"IDDQ", "", "⋯    │    ⋯   │    ⋯  "};
             }
-            addTable(list, tableData, "", 163, 20, -2, 4);
+            addTable(list, tableData, "", 163, 20, -2, 4, DEFAULT_STR, ACCENT_STR, DEFAULT_STR);
             
             // The part that was moved to the end
-            addHeader(list, COMMANDS);
+            addHeader(list, MEMORY);
             
             // Get system memory info and format it
             u64 RAM_Used_system_u, RAM_Total_system_u;
@@ -682,7 +752,7 @@ public:
             // Calculate free RAM and store in a smaller buffer
             char ramString[24];  // Reduced buffer size to 24
             float freeRamMB = (static_cast<float>(RAM_Total_system_u - RAM_Used_system_u) / (1024.0f * 1024.0f));
-            snprintf(ramString, sizeof(ramString), "%.2f MB %s", freeRamMB, FREE.c_str());
+            snprintf(ramString, sizeof(ramString), "%s %.2f MB", FREE.c_str(), freeRamMB);
 
             std::string ramColor;
             if (freeRamMB >= 9.0f){
@@ -695,7 +765,7 @@ public:
             
             // Reuse tableData with minimal reallocation
             tableData = {
-                {NOTICE, "", UTILIZES + " 2 MB (" + ramString + ")"}
+                {SEC_IFTX, "", "2 MB " + UTILIZES + " (" + ramString + ")"}
             };
             addTable(list, tableData, "", 163, 10, 7, 0, DEFAULT_STR, DEFAULT_STR, ramColor, RIGHT_STR, true);
             // Memory expansion toggle
@@ -707,13 +777,13 @@ public:
             tableData = {
                 {"", "", REBOOT_REQUIRED}  // Direct reuse without reallocation
             };
-            addTable(list, tableData, "", 163, 28, 0, 0, DEFAULT_STR, DEFAULT_STR, DEFAULT_STR, RIGHT_STR, true);
+            addTable(list, tableData, "", 163, 28, 0, 0, DEFAULT_STR, ACCENT_STR, DEFAULT_STR, RIGHT_STR, true);
         
         } else if (dropdownSelection == "themeMenu") {
             addHeader(list, THEME);
             std::string currentTheme = parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "current_theme");
             currentTheme = currentTheme.empty() ? DEFAULT_STR : currentTheme;
-            auto listItem = std::make_unique<tsl::elm::ListItem>(DEFAULT);
+            auto listItem = std::make_unique<tsl::elm::ListItem>(DF_THEME);
             if (currentTheme == DEFAULT_STR) {
                 listItem->setValue(CHECKMARK_SYMBOL);
                 lastSelectedListItem = std::shared_ptr<tsl::elm::ListItem>(listItem.get(), [](auto*){});
@@ -735,7 +805,7 @@ public:
                     tsl::initializeThemeVars();
                     reloadMenu = reloadMenu2 = true;
                     lastSelectedListItem->setValue("");
-                    selectedListItem->setValue(DEFAULT);
+                    selectedListItem->setValue(DF_THEME);
                     listItemRaw->setValue(CHECKMARK_SYMBOL);
                     lastSelectedListItem = std::shared_ptr<tsl::elm::ListItem>(listItemRaw, [](auto*){});
                     shiftItemFocus(listItemRaw);
@@ -873,18 +943,39 @@ public:
                 });
                 list->addItem(listItem.release());
             }
-        } else if (dropdownSelection == "widgetMenu") {
+        } /*else if (dropdownSelection == "widgetMenu") {
             addHeader(list, WIDGET);
             createToggleListItem(list, CLOCK, hideClock, "hide_clock", true);
             createToggleListItem(list, SOC_TEMPERATURE, hideSOCTemp, "hide_soc_temp", true);
             createToggleListItem(list, PCB_TEMPERATURE, hidePCBTemp, "hide_pcb_temp", true);
             createToggleListItem(list, BATTERY, hideBattery, "hide_battery", true);
 
-        } else if (dropdownSelection == "miscMenu") {
+        }*/ else if (dropdownSelection == "miscMenu") {
+            addHeader(list, THEME);
+            std::string currentTheme = parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "current_theme");
+            currentTheme = (currentTheme.empty() || currentTheme == DEFAULT_STR) ? DF_THEME : currentTheme;
+            addListItem(list, THEME, currentTheme, "themeMenu"); 
+
+            if (expandedMemory) {
+                std::string currentWallpaper = parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "current_wallpaper");
+                currentWallpaper = (currentWallpaper.empty() || currentWallpaper == OPTION_SYMBOL) ? OPTION_SYMBOL : currentWallpaper;
+                addListItem(list, WALLPAPER, currentWallpaper, "wallpaperMenu");
+            } 
+
+            std::string defaultLang = parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, DEFAULT_LANG_STR);
+            defaultLang = defaultLang.empty() ? "ko" : defaultLang;
+            addListItem(list, LANGUAGE, defaultLang, "languageMenu");
+
+            addHeader(list, WIDGET);
+            createToggleListItem(list, CLOCK, hideClock, "hide_clock", true);
+            createToggleListItem(list, SOC_TEMPERATURE, hideSOCTemp, "hide_soc_temp", true);
+            createToggleListItem(list, PCB_TEMPERATURE, hidePCBTemp, "hide_pcb_temp", true);
+            createToggleListItem(list, BATTERY, hideBattery, "hide_battery", true);
+
             addHeader(list, MENU_ITEMS);
             
-            hideUserGuide = (parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "hide_user_guide") == TRUE_STR);
-            createToggleListItem(list, USER_GUIDE, hideUserGuide, "hide_user_guide", true);
+            /* hideUserGuide = (parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "hide_user_guide") == TRUE_STR);
+            createToggleListItem(list, USER_GUIDE, hideUserGuide, "hide_user_guide", true); */
 
             cleanVersionLabels = (parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "clean_version_labels") == TRUE_STR);
             createToggleListItem(list, CLEAN_VERSIONS, cleanVersionLabels, "clean_version_labels", false, true);
@@ -1533,7 +1624,7 @@ public:
     virtual tsl::elm::Element* createUI() override {
         inScriptMenu = true;
         std::string packageName = getNameFromPath(filePath);
-        if (packageName == ".packages") packageName = ROOT_PACKAGE;
+        if (packageName == "Packages") packageName = ROOT_PACKAGE;
         else if (!packageRootLayerTitle.empty()) packageName = packageRootLayerTitle;
         auto list = std::make_unique<tsl::elm::List>();
         
@@ -2345,7 +2436,7 @@ public:
                         return true;
                     }
 
-                    else if (keys & SCRIPT_KEY) {
+                    /* else if (keys & SCRIPT_KEY) {
                         inSelectionMenu = false;
 
                         auto modifiedCmds = getSourceReplacement(commands, selectedItemsList[i], i, filePath);
@@ -2353,7 +2444,7 @@ public:
                         //tsl::changeTo<ScriptOverlay>(modifiedCmds, filePath, specificKey+" - "+ selectedItemsList[i], "selection");
                         tsl::changeTo<ScriptOverlay>(modifiedCmds, filePath, _itemName, "selection", false, _currentPackageHeader);
                         return true;
-                    }
+                    } */
 
                     return false;
                 });
@@ -2478,7 +2569,8 @@ public:
 
         auto rootFrame = std::make_unique<tsl::elm::OverlayFrame>(
             (!packageHeader.title.empty()) ? packageHeader.title : (!packageRootLayerTitle.empty() ? packageRootLayerTitle : getNameFromPath(filePath)),
-            !lastPackageHeader.empty() ? lastPackageHeader : (packageHeader.version != "" ? (!packageRootLayerVersion.empty() ? packageRootLayerVersion : packageHeader.version) + "   (Ultrahand Package)" : "Ultrahand Package"),
+            //!lastPackageHeader.empty() ? lastPackageHeader : (packageHeader.version != "" ? (!packageRootLayerVersion.empty() ? packageRootLayerVersion : packageHeader.version) + "   (Ultrahand Package)" : "Ultrahand Package"),
+            packageHeader.version != "" ? packageHeader.override + " : " + (!packageRootLayerVersion.empty() ? packageRootLayerVersion : packageHeader.version) : packageHeader.override + "ㅤ",
             noClickableItems,
             "",
             packageHeader.color);
@@ -2931,7 +3023,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
                                     
                                     return true;
                                 
-                                } else if (keys & SCRIPT_KEY) {
+                                } /* else if (keys & SCRIPT_KEY) {
                                     if (inPackageMenu)
                                         inPackageMenu = false;
                                     if (inSubPackageMenu)
@@ -2945,7 +3037,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
                                     // Pass all gathered commands to the ScriptOverlay
                                     tsl::changeTo<ScriptOverlay>(promptCommands, packagePath, optionName, "package", true, _lastPackageHeader);
                                     return true;
-                                }
+                                } */
                                 return false;
                             });
                         } else {
@@ -2961,7 +3053,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
                                     tsl::changeTo<MainMenu>("", optionName);
                                     simulatedSelectComplete = true;
                                     return true;
-                                } else if (keys & SCRIPT_KEY) {
+                                } /* else if (keys & SCRIPT_KEY) {
                                     if (inMainMenu) {
                                         inMainMenu = false;
                                     }
@@ -2972,7 +3064,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
 
                                     tsl::changeTo<ScriptOverlay>(promptCommands, PACKAGE_PATH, optionName, "main", true, _lastPackageHeader);
                                     return true;
-                                }
+                                } */
                                 return false;
                             });
                         }
@@ -3587,7 +3679,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
                                 tsl::changeTo<PackageMenu>(forwarderPackagePath, "", LEFT_STR, forwarderPackageIniName, nestedMenuCount, _lastPackageHeader);
                                 simulatedSelectComplete = true;
                                 return true;
-                            } else if (keys & SCRIPT_KEY) {
+                            } /* else if (keys & SCRIPT_KEY) {
                                 bool isFromMainMenu = (packagePath == PACKAGE_PATH);
                                 //if (inMainMenu) {
                                 //    isFromMainMenu = true;
@@ -3609,7 +3701,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
                                 // add lines ;mode=forwarder and package_source 'forwarderPackagePath' to front of modifiedCmds
                                 tsl::changeTo<ScriptOverlay>(modifiedCmds, packagePath, selectionItem, isFromMainMenu ? "main" : "package", true, _lastPackageHeader);
                                 return true;
-                            }
+                            } */
                             return false;
                         });
                     } else {
@@ -3659,7 +3751,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
                                 }
                                 simulatedSelectComplete = true;
                                 return true;
-                            } else if (keys & SCRIPT_KEY) {
+                            } /* else if (keys & SCRIPT_KEY) {
                                 bool isFromMainMenu = (packagePath == PACKAGE_PATH);
                                 //if (inMainMenu) {
                                 //    isFromMainMenu = true;
@@ -3680,7 +3772,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
                                 removeTag(selectionItem);
                                 tsl::changeTo<ScriptOverlay>(modifiedCmds, packagePath, selectionItem, isFromMainMenu ? "main" : "package", true, _lastPackageHeader);
                                 return true;
-                            }
+                            } */
                             return false;
                         });
                     }
@@ -3735,7 +3827,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
                                 simulatedSelectComplete = true;
                                 lastSelectedListItem->triggerClickAnimation();
                                 return true;
-                            }  else if (keys & SCRIPT_KEY) {
+                            } /* else if (keys & SCRIPT_KEY) {
                                 bool isFromMainMenu = (packagePath == PACKAGE_PATH);
                                 //if (inMainMenu) {
                                 //    isFromMainMenu = true;
@@ -3753,7 +3845,7 @@ bool drawCommandsMenu(std::unique_ptr<tsl::elm::List>& list,
                                 applyPlaceholderReplacementsToCommands(modifiedCmds, packagePath);
                                 tsl::changeTo<ScriptOverlay>(modifiedCmds, packagePath, keyName, isFromMainMenu ? "main" : "package", false, _lastPackageHeader);
                                 return true;
-                            }
+                            } */
                             return false;
                         });
                         onlyTables = false;
@@ -3979,7 +4071,8 @@ public:
         
         std::unique_ptr<tsl::elm::OverlayFrame> rootFrame = std::make_unique<tsl::elm::OverlayFrame>(
             (!packageHeader.title.empty()) ? packageHeader.title : (!packageRootLayerTitle.empty() ? packageRootLayerTitle : getNameFromPath(packagePath)),
-            ((!pageHeader.empty() && packageHeader.show_version != TRUE_STR) ? pageHeader: (packageHeader.version != "" ? (!packageRootLayerVersion.empty() ? packageRootLayerVersion : packageHeader.version) + "   (Ultrahand Package)" : "Ultrahand Package")),
+            //((!pageHeader.empty() && packageHeader.show_version != TRUE_STR) ? pageHeader: (packageHeader.version != "" ? (!packageRootLayerVersion.empty() ? packageRootLayerVersion : packageHeader.version) + "   (Ultrahand Package)" : "Ultrahand Package")),
+            packageHeader.version != "" ? packageHeader.override + " : " + (!packageRootLayerVersion.empty() ? packageRootLayerVersion : packageHeader.version) : packageHeader.override + "ㅤ",
             noClickableItems,
             "",
             packageHeader.color,
@@ -4396,7 +4489,7 @@ private:
     bool useOverlayLaunchArgs = false;
     std::string hiddenMenuMode, dropdownSection;
     bool initializingSpawn = false;
-    std::string defaultLang = "en";
+    std::string defaultLang = "ko";
     
 public:
     /**
@@ -4478,7 +4571,7 @@ public:
             
             if (!ultrahandSection.empty()) {
                 // Set default values for various settings
-                setDefaultValue(ultrahandSection, "hide_user_guide", FALSE_STR, hideUserGuide);
+                // setDefaultValue(ultrahandSection, "hide_user_guide", TRUE_STR, hideUserGuide);
                 setDefaultValue(ultrahandSection, "clean_version_labels", FALSE_STR, cleanVersionLabels);
                 setDefaultValue(ultrahandSection, "hide_overlay_versions", FALSE_STR, hideOverlayVersions);
                 setDefaultValue(ultrahandSection, "hide_package_versions", FALSE_STR, hidePackageVersions);
@@ -4503,7 +4596,7 @@ public:
                 }
             
                 if (ultrahandSection.count("hide_battery") == 0) {
-                    setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "hide_battery", TRUE_STR);
+                    setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "hide_battery", FALSE_STR);
                 }
             
                 if (ultrahandSection.count("hide_pcb_temp") == 0) {
@@ -4511,7 +4604,7 @@ public:
                 }
             
                 if (ultrahandSection.count("hide_soc_temp") == 0) {
-                    setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "hide_soc_temp", TRUE_STR);
+                    setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, "hide_soc_temp", FALSE_STR);
                 }
 
                 //if (ultrahandSection.count("overscan") == 0) {
@@ -4559,7 +4652,7 @@ public:
         if (isFileOrDirectory(langFile))
             parseLanguage(langFile);
         else {
-            if (defaultLang == "en")
+            if (defaultLang == "ko")
                 reinitializeLangVars();
         }
         
@@ -4926,18 +5019,83 @@ public:
                 std::ofstream packageFileOut(PACKAGE_PATH + PACKAGE_FILENAME);
                 if (packageFileOut) {
                     packageFileOut <<
-                        "[*Reboot To]\n"
-                        "[*Boot Entry]\n"
-                        "ini_file_source /bootloader/hekate_ipl.ini\n"
-                        "filter config\n"
-                        "reboot boot '{ini_file_source(*)}'\n"
-                        "[hekate - \uE073]\n"
+                        "[@]\n"
+                        "[blank]\n"
+                        ";mode=table\n"
+                        ";background=false\n"
+                        ";gap=30\n\n"
+                        "[volume]\n"
+                        ";mode=table\n"
+                        ";background=false\n"
+                        ";header_indent=true\n"
+                        ";info_text_color=accent\n"
+                        ";section_text_color=header\n"
+                        "'Volume+' = '" + VOL_TEXT + "'\n\n"
+                        "[" + SYS_VOLM + "]\n"
+                        ";mode=step_trackbar\n"
+                        ";unlocked=false\n"
+                        ";min_value=0\n"
+                        ";max_value=150\n"
+                        ";units=%\n"
+                        ";steps=31\n"
+                        ";on_every_tick=true\n"
+                        "volume {value}\n\n"
+                        "[blank]\n"
+                        ";mode=table\n"
+                        ";background=false\n"
+                        ";gap=30\n\n"
+                        "[CFW]\n"
+                        ";mode=table\n"
+                        ";background=false\n"
+                        ";header_indent=true\n"
+                        ";info_text_color=accent\n"
+                        ";section_text_color=header\n"
+                        "'" + LPLS_USG + "' = '" + LPLS_IFO + "'\n\n"
+                        "[*" + RBT_SECT + "]\n"
+                        "[reboot info]\n"
+                        ";mode=table\n"
+                        ";gap=25\n"
+                        "'Extra Setting+' = '" + LPLS_MT1 + "'\n\n"
+                        "[" + LPLS_CFW + "]\n"
+                        ";mini=true\n"
+                        "reboot ini '" + LPLS_CFE + "'\n"
+                        "[" + LPLS_OFW + "]\n"
+                        ";mini=true\n"
+                        "reboot ini '" + LPLS_OFE + "'\n"
+                        "[" + SHUTDOWN + "]\n"
+                        ";mini=true\n"
+                        "shutdown\n\n"
+                        "[blank]\n"
+                        ";mode=table\n"
+                        ";background=false\n"
+                        ";gap=30\n\n"
+                        "[hekate info]\n"
+                        ";mode=table\n"
+                        ";gap=25\n"
+                        "'Hekate' = '" + LPLS_MT2 + "'\n\n"
+                        "[Hekate (" + HKT_HOME + ")]\n"
+                        ";mini=true\n"
                         "reboot HEKATE\n"
-                        "[hekate UMS - \uE073\uE08D]\n"
-                        "reboot UMS\n"
-                        "\n[Commands]\n"
-                        "[Shutdown - \uE0F3]\n"
-                        "shutdown\n";
+                        "[Hekate (UMS)]\n"
+                        ";mini=true\n"
+                        "reboot UMS\n\n"
+                        "[blank]\n"
+                        ";mode=table\n"
+                        ";background=false\n"
+                        ";gap=30\n\n"
+                        "[l4t info]\n"
+                        ";mode=table\n"
+                        ";gap=25\n"
+                        "'L4T' = '" + LPLS_MT3 + "'\n\n"
+                        "[Lineage (" + L4T_ANDE + ")]\n"
+                        ";mini=true\n"
+                        "reboot ini '" + L4T_ANDE + "'\n"
+                        "[Lakka (" + L4T_EMUE + ")]\n"
+                        ";mini=true\n"
+                        "reboot ini '" + L4T_EMUE + "'\n"
+                        "[Ubuntu (" + L4T_UBTE + ")]\n"
+                        ";mini=true\n"
+                        "reboot ini '" + L4T_UBTE + "'";
                     packageFileOut.close();
                 }
             #endif
